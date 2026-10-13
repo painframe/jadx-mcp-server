@@ -79,3 +79,10 @@ Each feature is a separate stacked branch. Java counterparts are in painframe/ja
 - Adaptation: retain backend-owned caches and existing MCP controls; expose bounded-cache policy and project-generation metadata without duplicating cached state in Python. Existing clear_cache remains POST and forwards invalidation results.
 - Validation: 32 unittest cases; real MCP-to-HTTP stats/clear test preserves metadata and checks HTTP mutation method. Changed-file Ruff/Bandit clean.
 - Limits: Python does not claim cache eviction/invalidation correctness; paired Java tests verify cache implementation. No new Python cache is introduced.
+
+## 13 apk-loading
+
+- Donor: hnhcsl/jadx-mcp-server @ b4d4298c79f5ebefb044c9bbc70e27d54caf6ff5 (paired plugin @ 50781c0987f008703ee0f0c735b8e3efb611b5cd).
+- Adaptation: open_apk(path, replace=False) POSTs absolute backend-host paths; get_project_operation polls loading/ready/failed rather than treating scheduling as successful loading. Preserve backend unsaved-project safeguards.
+- Validation: 34 unittest cases, actual MCP/HTTP scheduling+poll state and default replace=False checks; invalid paths rejected; changed-file Ruff/Bandit clean.
+- Limits: GUI loading, cache invalidation and unsaved-state correctness require paired Java execution.
