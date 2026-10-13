@@ -30,3 +30,21 @@ class DiagnosticTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual([item['instance'] for item in result['instances']], ['a'])
         self.assertEqual(fetch.await_count, 1)
         self.assertNotIn('localhost', str(result))
+
+    async def test_status_deadline_cancels_slow_backends_together(self):
+        import asyncio
+        registry = {name: {'id': name, 'url': f'http://localhost/{name}', 'aliases': []} for name in ('a', 'b')}
+        active = 0
+        async def slow():
+            nonlocal active
+            active += 1
+            try:
+                await asyncio.sleep(60)
+            finally:
+                active -= 1
+        with patch.object(instances, 'registry', registry), patch.object(diagnostic_tools, 'STATUS_TIMEOUT', .01), patch.object(
+                diagnostic_tools, 'get_runtime_diagnostics', side_effect=slow):
+            result = await asyncio.wait_for(diagnostic_tools.status_view(), .2)
+        self.assertEqual(active, 0)
+        self.assertEqual(len(result['instances']), 2)
+        self.assertTrue(all(item['backend']['code'] == 'timeout' for item in result['instances']))
