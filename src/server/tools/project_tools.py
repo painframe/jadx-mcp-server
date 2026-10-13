@@ -17,3 +17,14 @@ async def get_project_operation(operation_id: str) -> dict:
     if not isinstance(operation_id, str) or not operation_id or len(operation_id) > 128:
         return error_response('Invalid project operation identifier', 'invalid_request')
     return await get_from_jadx('project-operation', {'operation_id': operation_id})
+
+
+async def get_backend_capabilities() -> dict:
+    """Read explicit GUI/headless capabilities from the authenticated health endpoint."""
+    result = await get_from_jadx('health', timeout=5)
+    if isinstance(result, dict) and result.get('error'):
+        return result
+    if (not isinstance(result, dict) or result.get('service') != 'jadx-ai-mcp'
+            or not isinstance(result.get('capabilities'), list)):
+        return error_response('Plugin does not advertise capabilities', 'unsupported_capability')
+    return result

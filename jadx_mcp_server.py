@@ -464,6 +464,12 @@ async def runtime_status() -> str:
     return json.dumps(await diagnostic_tools.status_view())
 
 
+@instance_tool(mcp)
+async def get_backend_capabilities() -> dict:
+    """Discover GUI/headless mode and supported routes before selecting analysis operations."""
+    return await project_tools.get_backend_capabilities()
+
+
 def main():
     parser = argparse.ArgumentParser("MCP Server for Jadx")
     parser.add_argument(

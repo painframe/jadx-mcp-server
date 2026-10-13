@@ -135,3 +135,10 @@ Each feature is a separate stacked branch. Java counterparts are in painframe/ja
 - New get_runtime_diagnostics tool and authenticated jadx://status MCP resource expose backend JVM/cache/thread metrics plus bridge queue occupancy and explicit degraded state. Status views filter permissions before each backend request and contain no backend addresses or credential references.
 - Validation: 56 unittest cases; degraded errors retained and status dispatch limited to permitted instances; auth HTTP tests continue passing; changed-file Ruff/Bandit clean.
 - Limits: status is an MCP resource, not a separate public web dashboard. Backend metrics require the paired Java diagnostic route.
+
+## 21 headless-analysis
+
+- Donor: DongShuaike/jadx-mcp-server @ c8415e5e3fba142fa12338fa743f33762f04b8ea (paired Java headless launcher).
+- Adaptation: get_backend_capabilities exposes authenticated mode/route capabilities. Known registry capabilities reject unsupported GUI operations before dispatch. For new routes returning unstructured404, health negotiation distinguishes unavailable feature from missing entity in a supported route. No blanket404 conversion.
+- Validation: 59 unittest cases; actual MCP/HTTP headless capability read, unsupported GUI action and supported-route404 distinction; changed-file Ruff/Bandit clean.
+- Limits: actual headless startup/decompilation belongs to the Java PR; capability metadata refresh is explicit through refresh_instances/get_backend_capabilities.

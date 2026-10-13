@@ -30,6 +30,8 @@ JADX_HOST = "127.0.0.1"
 JADX_PORT = 8650
 JADX_HTTP_BASE = f"http://{JADX_HOST}:{JADX_PORT}"
 JADX_TOKEN_FILE: str | None = None
+FEATURE_ENDPOINTS = frozenset({"class-info", "method-signature", "search-native-methods", "batch-analysis",
+    "open-apk", "project-operation", "jvm-info", "runtime-diagnostics"})
 
 # HTTP read timeouts (seconds) for plugin communication
 JADX_DEFAULT_TIMEOUT = 60.0
@@ -225,6 +227,9 @@ async def _request_jadx(method: str, endpoint: str, params=None,
     denied = authorization.forbidden(selected["id"] if selected else None, is_mutation(method, endpoint))
     if denied:
         return denied
+    capabilities = selected.get("capabilities") if selected else None
+    if isinstance(capabilities, list) and endpoint != "health" and endpoint not in capabilities:
+        return error_response("Operation is not supported by this plugin mode", "unsupported_capability", endpoint=endpoint)
     headers, auth_error = backend_headers()
     if auth_error:
         return auth_error
@@ -246,6 +251,12 @@ async def _request_jadx(method: str, endpoint: str, params=None,
                 await gate.release(write)
         _failures.pop(identity, None)
         result = _decode_response(response, endpoint)
+        if (endpoint in FEATURE_ENDPOINTS and isinstance(result, dict)
+                and result.get("status") == 404 and result.get("code") == "http_error"):
+            health = await _request_jadx("GET", "health", timeout=5)
+            advertised = health.get("capabilities") if isinstance(health, dict) else None
+            if not isinstance(advertised, list) or endpoint not in advertised:
+                return error_response("Plugin does not advertise the requested feature", "unsupported_capability", endpoint=endpoint)
         if isinstance(result, dict) and result.get("error") and is_mutation(method, endpoint):
             result["retryable"] = False
         return result
