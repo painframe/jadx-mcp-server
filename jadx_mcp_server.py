@@ -467,11 +467,21 @@ def main():
         default="127.0.0.1",
         type=str,
     )
+    parser.add_argument("--jadx-url", default=os.environ.get("JADX_API_URL"), help="Full HTTP(S) plugin URL")
+    parser.add_argument("--jadx-token-file", help="File containing backend bearer token; reloaded each request")
     args = parser.parse_args()
 
     # Configure
     config.set_jadx_host(args.jadx_host)
     config.set_jadx_port(args.jadx_port)
+    config.JADX_TOKEN_FILE = args.jadx_token_file
+    if args.jadx_url:
+        error = config.set_jadx_url(args.jadx_url)
+        if error:
+            parser.error(error["error"])
+    _, token_error = config.backend_headers()
+    if token_error:
+        parser.error(token_error["error"])
 
     # Security warning for non-localhost bind address
     if args.host not in ("127.0.0.1", "localhost", "::1"):
@@ -497,7 +507,7 @@ def main():
 
     logger.info("Testing JADX AI MCP Plugin connectivity...")
     result = config.health_ping()
-    logger.info("Health check result: %s", result)
+    logger.info("Health check %s", "failed" if isinstance(result, dict) and result.get("error") else "succeeded")
 
     # Run Server
     if args.http:
