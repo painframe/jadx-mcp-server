@@ -281,8 +281,10 @@ async def search_classes_by_keyword(
     """
     async def fetch_with_options(endpoint, params):
         response = await _get_from_jadx_search(endpoint, params)
-        if ((regex or case_sensitive) and isinstance(response, dict) and not response.get("error")
-                and response.get("search_options") != {"regex": regex, "case_sensitive": case_sensitive}):
+        if (regex or case_sensitive) and (
+                not isinstance(response, dict) or (not response.get("error") and
+                response.get("search_options") != {"regex": regex, "case_sensitive": case_sensitive})):
+
             return error_response("Plugin does not support the requested search options",
                                   "unsupported_capability", endpoint=endpoint)
         return response

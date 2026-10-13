@@ -31,3 +31,8 @@ class AnalysisToolsTests(unittest.IsolatedAsyncioTestCase):
         with patch.object(search_tools, '_get_from_jadx_search', fetch):
             result = await search_tools.search_classes_by_keyword('.*', regex=True)
         self.assertEqual(result['code'], 'unsupported_capability')
+
+    async def test_requested_options_reject_bare_list_success(self):
+        with patch.object(search_tools, '_get_from_jadx_search', AsyncMock(return_value=['wrong.Class'])):
+            result = await search_tools.search_classes_by_keyword('.*', regex=True)
+        self.assertEqual(result['code'], 'unsupported_capability')
