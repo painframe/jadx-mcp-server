@@ -22,3 +22,10 @@ Each feature is a separate stacked branch. Java counterparts are in painframe/ja
 - Adaptation: shared GET/POST decoder preserves error strings and successful objects/lists; adds code, retryability, source, endpoint and status. Raw HTML error bodies are omitted. Legacy plain text remains under response. JSON null/scalars and malformed pagination become typed errors. Existing long search timeout overrides remain.
 - Validation: 9 unittest cases (GET/POST error parity, null JSON, legacy text, no malformed pagination dispatch, malformed result shapes, error-body omission, baseline tests), import smoke, Ruff and Bandit on all changed Python files.
 - Limits: mock HTTP contract tests do not prove running Java plugin behavior.
+
+## 04 transport-resilience
+
+- Donor: ai-repo-save/jadx-mcp-server @ 2636d049d57649f0dfb80c054f882a827611116c.
+- Adaptation: five-second connection/pool deadline, caller-selected read timeout (including 3600-second searches), overall deadline of read+connection allowance, bounded three-second per-backend connection-failure cooldown. HTTP errors/read timeouts do not disable unrelated operations; cancellation propagates and mutations are never retried. Health/progress share failure tracking.
+- Validation: 13 unittest cases including timeout extensions, cancellation, backend isolation and 404 cooldown exclusion; changed-file Ruff/Bandit and import smoke.
+- Limits: process-local cooldown; no application retry or Java cancellation guarantee.

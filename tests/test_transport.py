@@ -71,3 +71,62 @@ class TransportTests(unittest.IsolatedAsyncioTestCase):
             fetch_function=AsyncMock(return_value={'items': [None]}),
             item_transformer=lambda item: item['name'])
         self.assertEqual(result['code'], 'invalid_response')
+
+class ResilienceTests(unittest.IsolatedAsyncioTestCase):
+    def setUp(self):
+        config._failures.clear()
+
+    def tearDown(self):
+        config._failures.clear()
+
+    async def test_connection_failure_cooldown_is_per_backend(self):
+        calls = []
+        def fail(request):
+            calls.append(str(request.url))
+            raise httpx.ConnectError('unreachable')
+        real_client = httpx.AsyncClient
+        with patch.object(config.httpx, 'AsyncClient', side_effect=lambda **kw: real_client(
+                transport=httpx.MockTransport(fail), **kw)):
+            await config.get_from_jadx('classes')
+            result = await config.post_to_jadx('cache-clear')
+            self.assertEqual(result['code'], 'unavailable')
+            self.assertEqual(len(calls), 1)
+            with patch.object(config, 'JADX_HTTP_BASE', 'http://127.0.0.1:9999'):
+                await config.get_from_jadx('classes')
+            self.assertEqual(len(calls), 2)
+
+    async def test_search_keeps_long_read_timeout_and_no_proxy(self):
+        observed = []
+        def handle(request):
+            observed.append(request.extensions['timeout'])
+            return httpx.Response(200, json={'items': []})
+        real_client = httpx.AsyncClient
+        def factory(**kw):
+            self.assertFalse(kw['trust_env'])
+            return real_client(transport=httpx.MockTransport(handle), **kw)
+        with patch.object(config.httpx, 'AsyncClient', side_effect=factory):
+            await config.get_from_jadx('search', timeout=config.JADX_SEARCH_TIMEOUT)
+        self.assertEqual(observed[0]['read'], 3600)
+        self.assertEqual(observed[0]['connect'], 5)
+
+    async def test_ordinary_http_errors_do_not_cooldown(self):
+        real_client = httpx.AsyncClient
+        with patch.object(config.httpx, 'AsyncClient', side_effect=lambda **kw: real_client(
+                transport=httpx.MockTransport(lambda request: httpx.Response(404)), **kw)):
+            await config.get_from_jadx('missing')
+        self.assertEqual(config._failures, {})
+
+    async def test_total_deadline_and_cancellation(self):
+        import asyncio
+        async def slow(request):
+            await asyncio.sleep(60)
+        real_client = httpx.AsyncClient
+        with patch.object(config.httpx, 'AsyncClient', side_effect=lambda **kw: real_client(
+                transport=httpx.MockTransport(slow), **kw)), patch.object(config, 'JADX_CONNECT_TIMEOUT', .001):
+            result = await config.get_from_jadx('slow', timeout=.001)
+            self.assertEqual(result['code'], 'timeout')
+            task = asyncio.create_task(config.post_to_jadx('mutation'))
+            await asyncio.sleep(0)
+            task.cancel()
+            with self.assertRaises(asyncio.CancelledError):
+                await task

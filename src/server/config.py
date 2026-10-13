@@ -9,8 +9,12 @@ Author: Jafar Pathan (zinja-coder@github)
 License: See LICENSE file
 """
 
+import asyncio
 import logging
+import math
 import sys
+import time
+from collections import OrderedDict
 from typing import Any
 
 import httpx
@@ -29,6 +33,32 @@ MUTATING_ENDPOINTS = frozenset({"rename-class", "rename-method", "rename-field",
 
 def is_mutation(method: str, endpoint: str) -> bool:
     return method != "GET" or endpoint.strip("/") in MUTATING_ENDPOINTS
+JADX_CONNECT_TIMEOUT = 5.0
+JADX_FAILURE_COOLDOWN = 3.0
+_FAILURES_MAX = 128
+_failures: OrderedDict[str, float] = OrderedDict()
+
+
+def _http_timeout(read_timeout: float) -> httpx.Timeout:
+    return httpx.Timeout(read_timeout, connect=min(read_timeout, JADX_CONNECT_TIMEOUT),
+                         pool=min(read_timeout, JADX_CONNECT_TIMEOUT))
+
+
+def _cooling_down(base: str) -> bool:
+    failed_at = _failures.get(base)
+    if failed_at is None:
+        return False
+    if time.monotonic() - failed_at < JADX_FAILURE_COOLDOWN:
+        return True
+    _failures.pop(base, None)
+    return False
+
+
+def _record_failure(base: str) -> None:
+    _failures[base] = time.monotonic()
+    _failures.move_to_end(base)
+    while len(_failures) > _FAILURES_MAX:
+        _failures.popitem(last=False)
 
 
 # Logging Setup
@@ -114,12 +144,21 @@ def _decode_response(response: httpx.Response, endpoint: str):
 
 
 def health_ping() -> str | dict[str, Any]:
+    base = JADX_HTTP_BASE
+    if _cooling_down(base):
+        return error_response("JADX connection is cooling down", "unavailable", retryable=True,
+                              endpoint="health")
     try:
         with httpx.Client(trust_env=False) as client:
-            response = client.get(f"{JADX_HTTP_BASE}/health", timeout=JADX_DEFAULT_TIMEOUT)
+            response = client.get(f"{base}/health", timeout=_http_timeout(JADX_CONNECT_TIMEOUT))
+            _failures.pop(base, None)
             if response.is_success:
                 return response.text
             return _decode_response(response, "health")
+    except httpx.ConnectError:
+        _record_failure(base)
+        return error_response("JADX health check failed", "unavailable", retryable=True,
+                              endpoint="health")
     except httpx.HTTPError:
         return error_response("JADX health check failed", "unavailable", retryable=True,
                               endpoint="health")
@@ -127,19 +166,30 @@ def health_ping() -> str | dict[str, Any]:
 
 async def _request_jadx(method: str, endpoint: str, params=None,
                         timeout: float = JADX_DEFAULT_TIMEOUT, json_body=None):
-    url = f"{JADX_HTTP_BASE}/{endpoint.lstrip('/')}"
+    if isinstance(timeout, bool) or not isinstance(timeout, (int, float)) or not math.isfinite(timeout) or timeout <= 0:
+        return error_response("timeout must be a positive finite number", "invalid_request", endpoint=endpoint)
+    base = JADX_HTTP_BASE
+    if _cooling_down(base):
+        return error_response("JADX connection is cooling down", "unavailable", retryable=not is_mutation(method, endpoint), endpoint=endpoint)
+    url = f"{base}/{endpoint.lstrip('/')}"
     try:
-        async with httpx.AsyncClient(trust_env=False) as client:
-            response = await client.request(method, url, params=params or {},
-                                            json=json_body, timeout=timeout)
+        async with asyncio.timeout(timeout + JADX_CONNECT_TIMEOUT):
+            async with httpx.AsyncClient(trust_env=False) as client:
+                response = await client.request(method, url, params=params or {},
+                                                json=json_body, timeout=_http_timeout(timeout))
+        _failures.pop(base, None)
         result = _decode_response(response, endpoint)
         if isinstance(result, dict) and result.get("error") and is_mutation(method, endpoint):
             result["retryable"] = False
         return result
-    except httpx.TimeoutException:
+    except (httpx.TimeoutException, TimeoutError):
         return error_response(
             f"Request timed out after {timeout}s; operation may still be running in JADX",
             "timeout", retryable=not is_mutation(method, endpoint), endpoint=endpoint)
+    except httpx.ConnectError:
+        _record_failure(base)
+        return error_response("Cannot connect to JADX plugin", "unavailable",
+                              retryable=not is_mutation(method, endpoint), endpoint=endpoint)
     except httpx.HTTPError:
         return error_response("Cannot communicate with JADX plugin", "unavailable",
                               retryable=not is_mutation(method, endpoint), endpoint=endpoint)
