@@ -107,3 +107,10 @@ Each feature is a separate stacked branch. Java counterparts are in painframe/ja
 - New get_jvm_info section enum covers manifest, services/SPI, entry-points, dependencies, properties and packages through the agreed jvm-info backend route. Public description distinguishes bytecode references from resolved runtime dependencies.
 - Validation: 40 unittest cases, all six sections through actual MCP/HTTP transport; changed-file Ruff/Bandit clean.
 - Limits: JAR fixture runtime analysis and format capability checks require paired Java implementation.
+
+## 17 authenticated-transport
+
+- Donor: DongShuaike/jadx-mcp-server @ c8415e5e3fba142fa12338fa743f33762f04b8ea.
+- Adaptation: full HTTP(S) backend URL (--jadx-url/JADX_API_URL), token from JADX_API_TOKEN or --jadx-token-file/JADX_API_TOKEN_FILE. File is reread per request for rotation; unreadable/invalid token fails closed. GET, POST, health and progress use the same bearer header. Tokens are not command-line values or logged; health logs only outcome. Proxy isolation remains.
+- Validation: 44 unittest cases, all transport modes receive auth, file rotation/rejection, full URL parsing and prefix retention; changed-file Ruff/Bandit clean.
+- Limits: this authenticates bridge-to-plugin traffic; MCP client identities and HTTP access policy are feature19. Use TLS termination for remote HTTP.

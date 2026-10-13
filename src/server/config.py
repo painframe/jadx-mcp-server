@@ -12,10 +12,13 @@ License: See LICENSE file
 import asyncio
 import logging
 import math
+import os
 import sys
 import time
 from collections import OrderedDict
+from pathlib import Path
 from typing import Any
+from urllib.parse import urlsplit, urlunsplit
 
 import httpx
 
@@ -25,6 +28,7 @@ from src.server.scheduling import gate_for
 JADX_HOST = "127.0.0.1"
 JADX_PORT = 8650
 JADX_HTTP_BASE = f"http://{JADX_HOST}:{JADX_PORT}"
+JADX_TOKEN_FILE: str | None = None
 
 # HTTP read timeouts (seconds) for plugin communication
 JADX_DEFAULT_TIMEOUT = 60.0
@@ -76,7 +80,37 @@ logger.propagate = False
 def _rebuild_jadx_http_base():
     """Rebuild the base URL used for all requests to the JADX plugin."""
     global JADX_HTTP_BASE
-    JADX_HTTP_BASE = f"http://{JADX_HOST}:{JADX_PORT}"
+    host = f"[{JADX_HOST}]" if ":" in JADX_HOST and not JADX_HOST.startswith("[") else JADX_HOST
+    JADX_HTTP_BASE = f"http://{host}:{JADX_PORT}"
+
+
+def set_jadx_url(url: str) -> dict | None:
+    global JADX_HTTP_BASE
+    try:
+        parsed = urlsplit(url)
+        valid = (parsed.scheme in {"http", "https"} and parsed.hostname
+                 and not parsed.username and not parsed.password and not parsed.query and not parsed.fragment
+                 and (parsed.port is None or 1 <= parsed.port <= 65535))
+    except ValueError:
+        valid = False
+    if not valid:
+        return error_response("Invalid backend URL; use HTTP(S) without credentials, query or fragment", "invalid_request")
+    JADX_HTTP_BASE = urlunsplit((parsed.scheme, parsed.netloc, parsed.path.rstrip("/"), "", ""))
+    return None
+
+
+def backend_headers() -> tuple[dict, dict | None]:
+    path = JADX_TOKEN_FILE or os.environ.get("JADX_API_TOKEN_FILE")
+    token = os.environ.get("JADX_API_TOKEN", "")
+    if path:
+        try:
+            with Path(path).open(encoding="utf-8") as source:
+                token = source.read(8193).strip()
+        except (OSError, UnicodeError):
+            return {}, error_response("Cannot read backend token file", "configuration_error")
+    if len(token) > 8192 or any(c.isspace() or not c.isprintable() for c in token):
+        return {}, error_response("Invalid backend bearer token", "configuration_error")
+    return ({"Authorization": f"Bearer {token}"} if token else {}), None
 
 
 def set_jadx_host(host: str):
@@ -150,12 +184,15 @@ def _decode_response(response: httpx.Response, endpoint: str):
 
 def health_ping() -> str | dict[str, Any]:
     base = JADX_HTTP_BASE
+    headers, auth_error = backend_headers()
+    if auth_error:
+        return auth_error
     if _cooling_down(base):
         return error_response("JADX connection is cooling down", "unavailable", retryable=True,
                               endpoint="health")
     try:
         with httpx.Client(trust_env=False) as client:
-            response = client.get(f"{base}/health", timeout=_http_timeout(JADX_CONNECT_TIMEOUT))
+            response = client.get(f"{base}/health", headers=headers, timeout=_http_timeout(JADX_CONNECT_TIMEOUT))
             _failures.pop(base, None)
             if response.is_success:
                 return response.text
@@ -174,6 +211,9 @@ async def _request_jadx(method: str, endpoint: str, params=None,
     if isinstance(timeout, bool) or not isinstance(timeout, (int, float)) or not math.isfinite(timeout) or timeout <= 0:
         return error_response("timeout must be a positive finite number", "invalid_request", endpoint=endpoint)
     base = JADX_HTTP_BASE
+    headers, auth_error = backend_headers()
+    if auth_error:
+        return auth_error
     if _cooling_down(base):
         return error_response("JADX connection is cooling down", "unavailable", retryable=not is_mutation(method, endpoint), endpoint=endpoint)
     url = f"{base}/{endpoint.lstrip('/')}"
@@ -187,7 +227,7 @@ async def _request_jadx(method: str, endpoint: str, params=None,
             try:
                 async with httpx.AsyncClient(trust_env=False) as client:
                     response = await client.request(method, url, params=params or {},
-                                                    json=json_body, timeout=_http_timeout(timeout))
+                                                    json=json_body, headers=headers, timeout=_http_timeout(timeout))
             finally:
                 await gate.release(write)
         _failures.pop(base, None)
