@@ -1,0 +1,13 @@
+{
+  "mode": "real JADX and HTTP handlers with test-only mocked GUI window",
+  "revisions": {
+    "baseline": {
+      "source_head": "885e5b1d4e82a6218794eb10a74b041879480239",
+      "compiled_classes_sha256": "3c5a97f150cafb5fa7c645798c2d32386be84d912fa106889b204b9a7f292011"
+    },
+    "candidate": {
+      "source_head": "c4abfbb47a8be4045593d84702674d9f49289e09",
+      "compiled_classes_sha256": "2304fc5c253ef24441ab11f910d48b951e4a4c95de4080d0ae4b535275cbf3b1"
+    }
+  }
+}

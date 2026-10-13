@@ -19,7 +19,9 @@ class JvmToolsTests(unittest.IsolatedAsyncioTestCase):
                 transport=httpx.MockTransport(handle), **kw)):
             async with Client(jadx_mcp_server.mcp) as client:
                 for section in ('manifest', 'services', 'entry-points', 'dependencies', 'properties', 'packages'):
-                    result = await client.call_tool('get_jvm_info', {'section': section})
+                    result = await client.call_tool('get_jvm_info', {'section': section, 'offset': 100, 'count': 25})
                     self.assertEqual(result.data['section'], section)
         self.assertEqual(len(requests), 6)
         self.assertTrue(all(request.url.path == '/jvm-info' for request in requests))
+        self.assertTrue(all(request.url.params['offset'] == '100' for request in requests))
+        self.assertTrue(all(request.url.params['count'] == '25' for request in requests))
