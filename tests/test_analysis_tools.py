@@ -59,3 +59,27 @@ class AnalysisToolsTests(unittest.IsolatedAsyncioTestCase):
                 result = await client.call_tool('search_native_methods', {'offset': -1})
             self.assertFalse(result.is_error)
             self.assertEqual(fetch.await_count, 1)
+
+    async def test_human_signature_and_overload_error_preserved(self):
+        from src.server.tools import refactor_tools
+        payload = {'error': 'Ambiguous method', 'code': 'ambiguous_method', 'candidates': ['run(int):void']}
+        fetch = AsyncMock(return_value=payload)
+        with patch.object(refactor_tools, 'get_from_jadx', fetch):
+            async with Client(jadx_mcp_server.mcp) as client:
+                result = await client.call_tool('rename_method', {'class_name': 'renamed.Class',
+                    'method_name': 'run', 'new_name': 'execute', 'method_signature': 'run(int, String):void'})
+            self.assertEqual(fetch.await_args.args[1]['method_signature'], 'run(int, String):void')
+            self.assertEqual(result.data, payload)
+
+    async def test_overload_diagnostics_survive_real_http_decoder(self):
+        import httpx
+
+        from src.server import config
+        real_client = httpx.AsyncClient
+        payload = {'error': 'Ambiguous method', 'code': 'ambiguous_method', 'candidates': ['run(int):void']}
+        with patch.object(config.httpx, 'AsyncClient', side_effect=lambda **kw: real_client(
+                transport=httpx.MockTransport(lambda request: httpx.Response(409, json=payload)), **kw)):
+            async with Client(jadx_mcp_server.mcp) as client:
+                result = await client.call_tool('get_method_by_name', {'class_name': 'example.Class', 'method_name': 'run'})
+        self.assertEqual(result.data['candidates'], payload['candidates'])
+

@@ -191,7 +191,7 @@ async def get_method_by_name(class_name: str, method_name: str, method_signature
     Args:
         class_name: Fully qualified class name
         method_name: Method name (can include signature)
-        method_signature: Optional method signature/descriptor (e.g. '(I)V') to distinguish overloads
+        method_signature: Descriptor '(I)V' or human signature 'run(int):void' to distinguish overloads
 
     Returns:
         dict: Method source code and metadata
