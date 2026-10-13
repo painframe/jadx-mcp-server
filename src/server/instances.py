@@ -66,8 +66,11 @@ def resolve(selector: str | None) -> tuple[str | None, str | None]:
     wanted = selector or default_instance
     if wanted is None:
         return (next(iter(registry)), None) if len(registry) == 1 else (None, 'Select an instance explicitly')
-    matches = [name for name, item in registry.items() if wanted == name or wanted in item['aliases']
-               or wanted == str(urlsplit(item['url']).port) or wanted == item.get('project_name')]
+    explicit = [name for name, item in registry.items() if wanted == name or wanted in item['aliases']]
+    if explicit:
+        return (explicit[0], None) if len(explicit) == 1 else (None, 'Ambiguous instance alias')
+    matches = [name for name, item in registry.items()
+               if wanted == str(urlsplit(item['url']).port) or wanted == item.get('project_name')]
     return (matches[0], None) if len(matches) == 1 else (None, 'Unknown or ambiguous instance')
 
 

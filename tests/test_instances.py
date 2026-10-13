@@ -64,3 +64,13 @@ class InstanceTests(unittest.IsolatedAsyncioTestCase):
             await instances.refresh_instances()
         self.assertFalse(instances.registry['a']['available'])
         self.assertFalse(instances.registry['b']['available'])
+
+    async def test_canonical_selectors_precede_discovered_names(self):
+        instances.registry['b']['project_name'] = 'a'
+        self.assertEqual(instances.resolve('a'), ('a', None))
+        instances.registry['b']['project_name'] = 'first'
+        self.assertEqual(instances.resolve('first'), ('a', None))
+
+    async def test_control_lane_cannot_collide_with_instance_id(self):
+        from src.server.scheduling import gate_for
+        self.assertIsNot(gate_for(('a', 'control')), gate_for('a#control'))
