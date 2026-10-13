@@ -15,7 +15,12 @@ import asyncio
 import logging
 
 from src.PaginationUtils import PaginationUtils
-from src.server.config import JADX_SEARCH_TIMEOUT, get_from_jadx, get_search_progress
+from src.server.config import (
+    JADX_SEARCH_TIMEOUT,
+    error_response,
+    get_from_jadx,
+    get_search_progress,
+)
 
 logger = logging.getLogger("jadx-mcp-server.search")
 
@@ -274,6 +279,14 @@ async def search_classes_by_keyword(
     Returns:
         dict: Paginated list of classes containing the search term, with metadata about matches
     """
+    async def fetch_with_options(endpoint, params):
+        response = await _get_from_jadx_search(endpoint, params)
+        if ((regex or case_sensitive) and isinstance(response, dict) and not response.get("error")
+                and response.get("search_options") != {"regex": regex, "case_sensitive": case_sensitive}):
+            return error_response("Plugin does not support the requested search options",
+                                  "unsupported_capability", endpoint=endpoint)
+        return response
+
     # Fire search request and progress poller concurrently
     progress_task = asyncio.create_task(_poll_progress(report_progress))
     try:
@@ -289,7 +302,7 @@ async def search_classes_by_keyword(
                 "case_sensitive": str(case_sensitive).lower(),
             },
             data_extractor=lambda parsed: parsed.get("classes", []),
-            fetch_function=_get_from_jadx_search,
+            fetch_function=fetch_with_options,
         )
     finally:
         progress_task.cancel()

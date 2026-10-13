@@ -9,7 +9,7 @@ from src.server.tools import search_tools
 
 class AnalysisToolsTests(unittest.IsolatedAsyncioTestCase):
     async def test_regex_reaches_backend_without_case_corruption(self):
-        fetch = AsyncMock(return_value={'classes': ['example.Match']})
+        fetch = AsyncMock(return_value={'classes': ['example.Match'], 'search_options': {'regex': True, 'case_sensitive': True}})
         with patch.object(search_tools, '_get_from_jadx_search', fetch):
             async with Client(jadx_mcp_server.mcp) as client:
                 result = await client.call_tool('search_classes_by_keyword', {
@@ -25,3 +25,9 @@ class AnalysisToolsTests(unittest.IsolatedAsyncioTestCase):
             await search_tools.search_classes_by_keyword('literal')
         self.assertEqual(fetch.await_args.args[1]['regex'], 'false')
         self.assertEqual(fetch.await_args.args[1]['case_sensitive'], 'false')
+
+    async def test_old_plugin_cannot_silently_ignore_requested_options(self):
+        fetch = AsyncMock(return_value={'classes': ['incorrect.Match']})
+        with patch.object(search_tools, '_get_from_jadx_search', fetch):
+            result = await search_tools.search_classes_by_keyword('.*', regex=True)
+        self.assertEqual(result['code'], 'unsupported_capability')
