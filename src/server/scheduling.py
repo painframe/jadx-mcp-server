@@ -45,7 +45,7 @@ class Gate:
             self.condition.notify_all()
 
 
-def gate_for(base: str) -> Gate | None:
+def gate_for(base: str | tuple[str, str]) -> Gate | None:
     loop = asyncio.get_running_loop()
     gates = _gates.setdefault(loop, {})
     if base not in gates:
