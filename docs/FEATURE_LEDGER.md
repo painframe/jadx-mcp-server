@@ -100,3 +100,10 @@ Each feature is a separate stacked branch. Java counterparts are in painframe/ja
 - Adaptation: per-backend reader/exclusive-writer gate, max 16 concurrent readers and 64 waiting requests, bounded 128-backend table; waiting writers prevent starvation. Legacy GET mutations serialize; read-only batch POST remains a reader. Queue time counts against overall deadline; cancellation removes waiters and releases active permits.
 - Validation: 39 unittest cases including writer exclusion, queued cancellation, saturation and independent backends; all changed-file Ruff/Bandit clean.
 - Limits: process-local scheduling complements Java serialization; multiple bridge processes still depend on backend mutation coordination.
+
+## 16 jvm-analysis-tools
+
+- Donor: xjoker/jadx-ai-mcp @ 30337f6f072aa360e9099c99e99fb330d44e8986.
+- New get_jvm_info section enum covers manifest, services/SPI, entry-points, dependencies, properties and packages through the agreed jvm-info backend route. Public description distinguishes bytecode references from resolved runtime dependencies.
+- Validation: 40 unittest cases, all six sections through actual MCP/HTTP transport; changed-file Ruff/Bandit clean.
+- Limits: JAR fixture runtime analysis and format capability checks require paired Java implementation.

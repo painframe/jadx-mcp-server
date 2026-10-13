@@ -59,6 +59,7 @@ from src.server.tools import (
     class_tools,
     comment_tools,
     debug_tools,
+    jvm_tools,
     project_tools,
     refactor_tools,
     resource_tools,
@@ -424,6 +425,15 @@ async def open_apk(path: str, replace: bool = False) -> dict:
 async def get_project_operation(operation_id: str) -> dict:
     """Poll an APK load until ready or failed before issuing analysis requests."""
     return await project_tools.get_project_operation(operation_id)
+
+
+@mcp.tool()
+async def get_jvm_info(section: jvm_tools.JvmSection) -> dict:
+    """Inspect JAR manifest, SPI services, entry points, structural dependencies, properties or packages.
+
+    Dependency summaries describe references visible in bytecode, not resolved runtime dependencies.
+    """
+    return await jvm_tools.get_jvm_info(section)
 
 
 def main():
