@@ -10,7 +10,8 @@ class BenchmarkTests(unittest.IsolatedAsyncioTestCase):
         result = summarize([{'elapsed_ms': 1, 'ok': True}, {'elapsed_ms': 10, 'ok': False, 'partial': True}])
         self.assertEqual(result['successful'], 1)
         self.assertEqual(result['partial'], 1)
-        self.assertEqual(result['p95_ms'], 10)
+        # Failure/partial latency is not successful-work latency and cannot imply a speedup.
+        self.assertEqual(result['p95_ms'], 1)
 
     async def test_source_hash_and_unsupported_batch_are_distinct(self):
         def handler(request):
@@ -21,3 +22,13 @@ class BenchmarkTests(unittest.IsolatedAsyncioTestCase):
         self.assertTrue(source['ok'])
         self.assertEqual(len(source['source_sha256']), 64)
         self.assertFalse(batch['ok'])
+
+    async def test_http_200_partial_search_is_not_successful_work(self):
+        async with httpx.AsyncClient(transport=httpx.MockTransport(lambda request: httpx.Response(200,
+                json={'classes': ['A'], 'partial': True}))) as client:
+            result = await sample(client, 'http://localhost', 'search-classes-by-keyword', {}, 1)
+        self.assertFalse(result['ok'])
+        self.assertTrue(result['partial'])
+        summary = summarize([result])
+        self.assertEqual(summary['successful'], 0)
+        self.assertIsNone(summary['p95_ms'])

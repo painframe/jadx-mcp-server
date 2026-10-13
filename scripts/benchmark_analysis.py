@@ -17,8 +17,9 @@ MAX_RESPONSE_BYTES = 8 * 1024 * 1024
 
 
 def summarize(samples: list[dict]) -> dict:
-    latencies = sorted(sample['elapsed_ms'] for sample in samples)
-    return {'requests': len(samples), 'successful': sum(sample['ok'] for sample in samples),
+    complete = [sample for sample in samples if sample['ok'] and not sample.get('partial', False)]
+    latencies = sorted(sample['elapsed_ms'] for sample in complete)
+    return {'requests': len(samples), 'successful': len(complete), 'failed': sum(not sample['ok'] and not sample.get('partial', False) for sample in samples),
             'partial': sum(sample.get('partial', False) for sample in samples),
             'median_ms': statistics.median(latencies) if latencies else None,
             'p95_ms': latencies[max(0, math.ceil(.95 * len(latencies)) - 1)] if latencies else None,
@@ -71,6 +72,8 @@ async def sample(client: httpx.AsyncClient, base: str, endpoint: str, params: di
                     result['code'] = 'invalid_response'
     except (httpx.HTTPError, TimeoutError):
         result['code'] = 'transport_error'
+    if result['partial']:
+        result['ok'] = False
     result['elapsed_ms'] = round((time.perf_counter() - started) * 1000, 3)
     return result
 
@@ -140,7 +143,9 @@ def main() -> int:
             'cases': asyncio.run(benchmark(url, credential, args.class_name, args.iterations, args.concurrency, args.timeout))}
     source_sets = [{sample.get('source_sha256') for sample in report['results'][label]['cases']['source_warm']['samples']}
                    for label in ('baseline', 'candidate')]
-    report['source_equal'] = source_sets[0] == source_sets[1] and None not in source_sets[0]
+    report['source_equal'] = (source_sets[0] == source_sets[1] and None not in source_sets[0]
+        and all(report['results'][label]['cases']['source_warm']['successful'] == args.iterations
+                for label in ('baseline', 'candidate')))
     try:
         with args.output.open('x', encoding='utf-8') as target:
             json.dump(report, target, indent=2)
