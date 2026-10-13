@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # /// script
 # requires-python = ">=3.13"
-# dependencies = [ "fastmcp>=3.0.2", "httpx" ]
+# dependencies = [ "fastmcp>=3.0.2", "httpx", "defusedxml>=0.7.1" ]
 # ///
 
 """
@@ -91,13 +91,13 @@ async def get_all_classes(offset: int = 0, count: int = 0) -> dict:
 
 
 @mcp.tool()
-async def get_class_source(class_name: str, with_line_numbers: bool = False) -> dict:
+async def get_class_source(class_name: str, with_line_numbers: bool = False, max_bytes: int | None = None, cursor: str | None = None) -> dict:
     """Fetch the Java source of a specific class.
 
     Set with_line_numbers=True to get every line prefixed with its 1-based line number.
     Those are the numbers add_comment takes as its 'line' argument, so use this before
     placing a line comment instead of counting lines yourself."""
-    return await class_tools.get_class_source(class_name, with_line_numbers)
+    return await class_tools.get_class_source(class_name, with_line_numbers, max_bytes, cursor)
 
 
 @mcp.tool()
@@ -178,9 +178,9 @@ async def get_fields_of_class(class_name: str) -> dict:
 
 
 @mcp.tool()
-async def get_smali_of_class(class_name: str) -> dict:
+async def get_smali_of_class(class_name: str, max_bytes: int | None = None, cursor: str | None = None) -> dict:
     """Fetch the smali representation of a class."""
-    return await class_tools.get_smali_of_class(class_name)
+    return await class_tools.get_smali_of_class(class_name, max_bytes, cursor)
 
 
 @mcp.tool()
@@ -209,9 +209,9 @@ async def get_all_resource_file_names(offset: int = 0, count: int = 0) -> dict:
 
 
 @mcp.tool()
-async def get_resource_file(resource_name: str) -> dict:
+async def get_resource_file(resource_name: str, max_bytes: int | None = None, cursor: str | None = None) -> dict:
     """Retrieve resource file content."""
-    return await resource_tools.get_resource_file(resource_name)
+    return await resource_tools.get_resource_file(resource_name, max_bytes, cursor)
 
 
 @mcp.tool()

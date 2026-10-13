@@ -8,10 +8,11 @@ Author: Jafar Pathan (zinja-coder@github)
 License: See LICENSE file
 """
 
-from src.server.config import get_from_jadx
+from defusedxml import ElementTree as ET
+from defusedxml.common import DefusedXmlException
+
 from src.PaginationUtils import PaginationUtils
-import xml.etree.ElementTree as ET
-from typing import Dict, List
+from src.server.config import get_content_from_jadx, get_from_jadx
 
 
 async def get_android_manifest() -> dict:
@@ -43,7 +44,11 @@ async def get_manifest_component(component_type: str, only_exported: bool = Fals
     Description: Extracts specific component data (activity/provider/service/receiver) from AndroidManifest.xml
     """
     manifest_data = await get_android_manifest()
+    if not isinstance(manifest_data, dict) or manifest_data.get("error"):
+        return manifest_data
     manifest_xml = manifest_data.get("content", "")
+    if not isinstance(manifest_xml, str) or len(manifest_xml) > 4_194_304:
+        return {"error": "Manifest must be text under 4 MiB", "code": "invalid_response"}
     if not manifest_xml:
         return {"error": "AndroidManifest.xml content is empty, no data to parse"}
 
@@ -56,9 +61,8 @@ async def get_manifest_component(component_type: str, only_exported: bool = Fals
         }
 
     try:
-        ET.register_namespace("android", "http://schemas.android.com/apk/res/android")
         root = ET.fromstring(manifest_xml)
-        component_xml_list: List[str] = []
+        component_xml_list: list[str] = []
         target_tags = [component_type] + ALIAS_MAP.get(component_type, [])
         for tag in target_tags:
             for component_elem in root.iter(tag):
@@ -78,10 +82,10 @@ async def get_manifest_component(component_type: str, only_exported: bool = Fals
             "components": component_xml_list
         }
 
-    except ET.ParseError as e:
-        return {"error": f"AndroidManifest.xml parse failed: {str(e)}"}
-    except Exception as e:
-        return {"error": f"Unexpected error when fetching component: {str(e)}"}
+    except (ET.ParseError, DefusedXmlException) as e:
+        return {"error": f"AndroidManifest.xml parse failed: {e!s}"}
+    except (TypeError, ValueError, AttributeError) as e:
+        return {"error": f"Unexpected error when fetching component: {e!s}"}
 
 
 async def get_strings(offset: int = 0, count: int = 0) -> dict:
@@ -130,7 +134,7 @@ async def get_all_resource_file_names(offset: int = 0, count: int = 0) -> dict:
     )
 
 
-async def get_resource_file(resource_name: str) -> dict:
+async def get_resource_file(resource_name: str, max_bytes: int | None = None, cursor: str | None = None) -> dict:
     """
     Retrieve resource file content.
 
@@ -143,4 +147,4 @@ async def get_resource_file(resource_name: str) -> dict:
     MCP Tool: get_resource_file
     Description: Fetches content of any resource file by path
     """
-    return await get_from_jadx("get-resource-file", {"file_name": resource_name})
+    return await get_content_from_jadx("get-resource-file", {"file_name": resource_name}, max_bytes, cursor)
