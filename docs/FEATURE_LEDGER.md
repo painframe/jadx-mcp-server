@@ -50,3 +50,10 @@ Each feature is a separate stacked branch. Java counterparts are in painframe/ja
 - New search_native_methods MCP tool forwards package and validated offset/count to search-native-methods, normalizing method items through existing pagination.
 - Validation: 21 unittest cases including paginated dispatch and invalid pagination no-dispatch through actual MCP; changed-file Ruff/Bandit clean.
 - Limits: declaration discovery does not analyze native implementation binaries; requires paired Java route.
+
+## 09 human-method-signatures
+
+- Donors: ngkz/jadx-ai-mcp @ e8d11033a6751f0174ad7b4b00a886d9d3df972d and included MrWeigx signature changes.
+- Adaptation: advertise human signatures alongside existing JVM descriptors; forward exact strings and renamed identifiers through existing tools without a duplicate Python parser. Preserve backend ambiguity diagnostics and nullable arguments.
+- Validation: 22 unittest cases, including actual MCP rename with a human signature and unchanged overload error payload; changed-file Ruff/Bandit clean.
+- Limits: parsing and original/alias lookup require the paired Java feature. This bridge does not guess overloads.

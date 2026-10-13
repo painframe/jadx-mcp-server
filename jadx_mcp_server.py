@@ -80,7 +80,7 @@ async def get_selected_text() -> dict:
 
 @mcp.tool()
 async def get_method_by_name(class_name: str, method_name: str, method_signature: str | None = None) -> dict:
-    """Fetch the source code of a method from a specific class."""
+    """Fetch a method; method_signature accepts '(I)V' or 'run(int):void'."""
     return await search_tools.get_method_by_name(class_name, method_name, method_signature)
 
 
@@ -263,7 +263,7 @@ async def rename_method(
     class_name: str | None = None,
     method_signature: str | None = None,
 ) -> dict:
-    """Renames a specific method, optionally scoped to class_name."""
+    """Rename a method, scoped by class and descriptor or 'run(int):void' signature."""
     return await refactor_tools.rename_method(
         method_name, new_name, class_name, method_signature
     )

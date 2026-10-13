@@ -32,8 +32,8 @@ async def rename_class(class_name: str, new_name: str) -> dict:
 async def rename_method(
     method_name: str,
     new_name: str,
-    class_name: str = None,
-    method_signature: str = None,
+    class_name: str | None = None,
+    method_signature: str | None = None,
 ) -> dict:
     """
     Renames a specific method.
@@ -42,7 +42,7 @@ async def rename_method(
         method_name: Current method name (can include signature)
         new_name: New name for the method
         class_name: Optional fully qualified class name to scope the rename
-        method_signature: Optional method signature/descriptor (e.g. '(I)V') to distinguish overloads
+        method_signature: Descriptor '(I)V' or human signature 'run(int):void' to distinguish overloads
 
     Returns:
         dict: Confirmation of rename operation
@@ -100,7 +100,7 @@ async def rename_package(old_package_name: str, new_package_name: str) -> dict:
     })
 
 
-async def rename_variable(class_name: str, method_name: str, variable_name: str, new_name: str, reg: str = None, ssa: str = None) -> dict:
+async def rename_variable(class_name: str, method_name: str, variable_name: str, new_name: str, reg: str | None = None, ssa: str | None = None) -> dict:
     """
     Renames a specific variable in a method.
 

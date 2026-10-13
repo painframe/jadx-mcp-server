@@ -59,3 +59,14 @@ class AnalysisToolsTests(unittest.IsolatedAsyncioTestCase):
                 result = await client.call_tool('search_native_methods', {'offset': -1})
             self.assertFalse(result.is_error)
             self.assertEqual(fetch.await_count, 1)
+
+    async def test_human_signature_and_overload_error_preserved(self):
+        from src.server.tools import refactor_tools
+        payload = {'error': 'Ambiguous method', 'code': 'ambiguous_method', 'candidates': ['run(int):void']}
+        fetch = AsyncMock(return_value=payload)
+        with patch.object(refactor_tools, 'get_from_jadx', fetch):
+            async with Client(jadx_mcp_server.mcp) as client:
+                result = await client.call_tool('rename_method', {'class_name': 'renamed.Class',
+                    'method_name': 'run', 'new_name': 'execute', 'method_signature': 'run(int, String):void'})
+            self.assertEqual(fetch.await_args.args[1]['method_signature'], 'run(int, String):void')
+            self.assertEqual(result.data, payload)
