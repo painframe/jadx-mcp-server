@@ -1,0 +1,2604 @@
+{
+  "fixture_sha256": "864e340a97367e378824d928a6fe7a60443cc65cdac088ccc4d9bedf9179ad12",
+  "class_name": "com.jadxtest.library.Calculator",
+  "iterations": 30,
+  "concurrency": 4,
+  "results": {
+    "baseline": {
+      "revision": "885e5b1d4e82a6218794eb10a74b041879480239",
+      "cases": {
+        "source_warm": {
+          "requests": 30,
+          "successful": 30,
+          "failed": 0,
+          "partial": 0,
+          "median_ms": 2.0385,
+          "p95_ms": 2.832,
+          "samples": [
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 853,
+              "source_sha256": "1f71b4a14503c6a5dfa38f4f08d68346bcd6d0844dd86a5069ac1f18aea0a38f",
+              "elapsed_ms": 2.446
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 853,
+              "source_sha256": "1f71b4a14503c6a5dfa38f4f08d68346bcd6d0844dd86a5069ac1f18aea0a38f",
+              "elapsed_ms": 2.832
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 853,
+              "source_sha256": "1f71b4a14503c6a5dfa38f4f08d68346bcd6d0844dd86a5069ac1f18aea0a38f",
+              "elapsed_ms": 2.782
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 853,
+              "source_sha256": "1f71b4a14503c6a5dfa38f4f08d68346bcd6d0844dd86a5069ac1f18aea0a38f",
+              "elapsed_ms": 3.251
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 853,
+              "source_sha256": "1f71b4a14503c6a5dfa38f4f08d68346bcd6d0844dd86a5069ac1f18aea0a38f",
+              "elapsed_ms": 2.332
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 853,
+              "source_sha256": "1f71b4a14503c6a5dfa38f4f08d68346bcd6d0844dd86a5069ac1f18aea0a38f",
+              "elapsed_ms": 2.016
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 853,
+              "source_sha256": "1f71b4a14503c6a5dfa38f4f08d68346bcd6d0844dd86a5069ac1f18aea0a38f",
+              "elapsed_ms": 2.751
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 853,
+              "source_sha256": "1f71b4a14503c6a5dfa38f4f08d68346bcd6d0844dd86a5069ac1f18aea0a38f",
+              "elapsed_ms": 1.943
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 853,
+              "source_sha256": "1f71b4a14503c6a5dfa38f4f08d68346bcd6d0844dd86a5069ac1f18aea0a38f",
+              "elapsed_ms": 1.912
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 853,
+              "source_sha256": "1f71b4a14503c6a5dfa38f4f08d68346bcd6d0844dd86a5069ac1f18aea0a38f",
+              "elapsed_ms": 2.048
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 853,
+              "source_sha256": "1f71b4a14503c6a5dfa38f4f08d68346bcd6d0844dd86a5069ac1f18aea0a38f",
+              "elapsed_ms": 2.054
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 853,
+              "source_sha256": "1f71b4a14503c6a5dfa38f4f08d68346bcd6d0844dd86a5069ac1f18aea0a38f",
+              "elapsed_ms": 1.993
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 853,
+              "source_sha256": "1f71b4a14503c6a5dfa38f4f08d68346bcd6d0844dd86a5069ac1f18aea0a38f",
+              "elapsed_ms": 2.001
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 853,
+              "source_sha256": "1f71b4a14503c6a5dfa38f4f08d68346bcd6d0844dd86a5069ac1f18aea0a38f",
+              "elapsed_ms": 1.923
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 853,
+              "source_sha256": "1f71b4a14503c6a5dfa38f4f08d68346bcd6d0844dd86a5069ac1f18aea0a38f",
+              "elapsed_ms": 1.992
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 853,
+              "source_sha256": "1f71b4a14503c6a5dfa38f4f08d68346bcd6d0844dd86a5069ac1f18aea0a38f",
+              "elapsed_ms": 2.07
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 853,
+              "source_sha256": "1f71b4a14503c6a5dfa38f4f08d68346bcd6d0844dd86a5069ac1f18aea0a38f",
+              "elapsed_ms": 2.285
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 853,
+              "source_sha256": "1f71b4a14503c6a5dfa38f4f08d68346bcd6d0844dd86a5069ac1f18aea0a38f",
+              "elapsed_ms": 2.432
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 853,
+              "source_sha256": "1f71b4a14503c6a5dfa38f4f08d68346bcd6d0844dd86a5069ac1f18aea0a38f",
+              "elapsed_ms": 1.896
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 853,
+              "source_sha256": "1f71b4a14503c6a5dfa38f4f08d68346bcd6d0844dd86a5069ac1f18aea0a38f",
+              "elapsed_ms": 2.204
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 853,
+              "source_sha256": "1f71b4a14503c6a5dfa38f4f08d68346bcd6d0844dd86a5069ac1f18aea0a38f",
+              "elapsed_ms": 2.072
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 853,
+              "source_sha256": "1f71b4a14503c6a5dfa38f4f08d68346bcd6d0844dd86a5069ac1f18aea0a38f",
+              "elapsed_ms": 1.758
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 853,
+              "source_sha256": "1f71b4a14503c6a5dfa38f4f08d68346bcd6d0844dd86a5069ac1f18aea0a38f",
+              "elapsed_ms": 2.096
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 853,
+              "source_sha256": "1f71b4a14503c6a5dfa38f4f08d68346bcd6d0844dd86a5069ac1f18aea0a38f",
+              "elapsed_ms": 2.029
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 853,
+              "source_sha256": "1f71b4a14503c6a5dfa38f4f08d68346bcd6d0844dd86a5069ac1f18aea0a38f",
+              "elapsed_ms": 1.963
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 853,
+              "source_sha256": "1f71b4a14503c6a5dfa38f4f08d68346bcd6d0844dd86a5069ac1f18aea0a38f",
+              "elapsed_ms": 2.12
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 853,
+              "source_sha256": "1f71b4a14503c6a5dfa38f4f08d68346bcd6d0844dd86a5069ac1f18aea0a38f",
+              "elapsed_ms": 1.815
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 853,
+              "source_sha256": "1f71b4a14503c6a5dfa38f4f08d68346bcd6d0844dd86a5069ac1f18aea0a38f",
+              "elapsed_ms": 1.508
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 853,
+              "source_sha256": "1f71b4a14503c6a5dfa38f4f08d68346bcd6d0844dd86a5069ac1f18aea0a38f",
+              "elapsed_ms": 1.252
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 853,
+              "source_sha256": "1f71b4a14503c6a5dfa38f4f08d68346bcd6d0844dd86a5069ac1f18aea0a38f",
+              "elapsed_ms": 1.28
+            }
+          ],
+          "warmup": {
+            "ok": true,
+            "partial": false,
+            "status": 200,
+            "bytes": 853,
+            "source_sha256": "1f71b4a14503c6a5dfa38f4f08d68346bcd6d0844dd86a5069ac1f18aea0a38f",
+            "elapsed_ms": 41.166
+          }
+        },
+        "search_repeated": {
+          "requests": 30,
+          "successful": 30,
+          "failed": 0,
+          "partial": 0,
+          "median_ms": 2.217,
+          "p95_ms": 5.125,
+          "samples": [
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 209,
+              "result_count": 1,
+              "elapsed_ms": 5.125
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 209,
+              "result_count": 1,
+              "elapsed_ms": 5.01
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 209,
+              "result_count": 1,
+              "elapsed_ms": 5.471
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 209,
+              "result_count": 1,
+              "elapsed_ms": 4.761
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 209,
+              "result_count": 1,
+              "elapsed_ms": 3.01
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 209,
+              "result_count": 1,
+              "elapsed_ms": 2.045
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 209,
+              "result_count": 1,
+              "elapsed_ms": 2.604
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 209,
+              "result_count": 1,
+              "elapsed_ms": 2.348
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 209,
+              "result_count": 1,
+              "elapsed_ms": 2.054
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 209,
+              "result_count": 1,
+              "elapsed_ms": 2.119
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 209,
+              "result_count": 1,
+              "elapsed_ms": 1.977
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 209,
+              "result_count": 1,
+              "elapsed_ms": 2.322
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 209,
+              "result_count": 1,
+              "elapsed_ms": 2.193
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 209,
+              "result_count": 1,
+              "elapsed_ms": 2.293
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 209,
+              "result_count": 1,
+              "elapsed_ms": 2.241
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 209,
+              "result_count": 1,
+              "elapsed_ms": 1.843
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 209,
+              "result_count": 1,
+              "elapsed_ms": 2.875
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 209,
+              "result_count": 1,
+              "elapsed_ms": 1.707
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 209,
+              "result_count": 1,
+              "elapsed_ms": 2.032
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 209,
+              "result_count": 1,
+              "elapsed_ms": 2.615
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 209,
+              "result_count": 1,
+              "elapsed_ms": 2.974
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 209,
+              "result_count": 1,
+              "elapsed_ms": 1.882
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 209,
+              "result_count": 1,
+              "elapsed_ms": 2.38
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 209,
+              "result_count": 1,
+              "elapsed_ms": 2.456
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 209,
+              "result_count": 1,
+              "elapsed_ms": 2.088
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 209,
+              "result_count": 1,
+              "elapsed_ms": 1.843
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 209,
+              "result_count": 1,
+              "elapsed_ms": 1.944
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 209,
+              "result_count": 1,
+              "elapsed_ms": 1.695
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 209,
+              "result_count": 1,
+              "elapsed_ms": 1.729
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 209,
+              "result_count": 1,
+              "elapsed_ms": 1.575
+            }
+          ],
+          "warmup": {
+            "ok": true,
+            "partial": false,
+            "status": 200,
+            "bytes": 209,
+            "result_count": 1,
+            "elapsed_ms": 63.282
+          }
+        },
+        "batch_source": {
+          "requests": 30,
+          "successful": 0,
+          "failed": 30,
+          "partial": 0,
+          "median_ms": null,
+          "p95_ms": null,
+          "samples": [
+            {
+              "ok": false,
+              "partial": false,
+              "status": 404,
+              "bytes": 39,
+              "elapsed_ms": 1.467
+            },
+            {
+              "ok": false,
+              "partial": false,
+              "status": 404,
+              "bytes": 39,
+              "elapsed_ms": 1.707
+            },
+            {
+              "ok": false,
+              "partial": false,
+              "status": 404,
+              "bytes": 39,
+              "elapsed_ms": 1.625
+            },
+            {
+              "ok": false,
+              "partial": false,
+              "status": 404,
+              "bytes": 39,
+              "elapsed_ms": 1.974
+            },
+            {
+              "ok": false,
+              "partial": false,
+              "status": 404,
+              "bytes": 39,
+              "elapsed_ms": 1.486
+            },
+            {
+              "ok": false,
+              "partial": false,
+              "status": 404,
+              "bytes": 39,
+              "elapsed_ms": 1.785
+            },
+            {
+              "ok": false,
+              "partial": false,
+              "status": 404,
+              "bytes": 39,
+              "elapsed_ms": 2.101
+            },
+            {
+              "ok": false,
+              "partial": false,
+              "status": 404,
+              "bytes": 39,
+              "elapsed_ms": 1.331
+            },
+            {
+              "ok": false,
+              "partial": false,
+              "status": 404,
+              "bytes": 39,
+              "elapsed_ms": 1.54
+            },
+            {
+              "ok": false,
+              "partial": false,
+              "status": 404,
+              "bytes": 39,
+              "elapsed_ms": 2.172
+            },
+            {
+              "ok": false,
+              "partial": false,
+              "status": 404,
+              "bytes": 39,
+              "elapsed_ms": 2.655
+            },
+            {
+              "ok": false,
+              "partial": false,
+              "status": 404,
+              "bytes": 39,
+              "elapsed_ms": 1.186
+            },
+            {
+              "ok": false,
+              "partial": false,
+              "status": 404,
+              "bytes": 39,
+              "elapsed_ms": 1.377
+            },
+            {
+              "ok": false,
+              "partial": false,
+              "status": 404,
+              "bytes": 39,
+              "elapsed_ms": 1.895
+            },
+            {
+              "ok": false,
+              "partial": false,
+              "status": 404,
+              "bytes": 39,
+              "elapsed_ms": 1.423
+            },
+            {
+              "ok": false,
+              "partial": false,
+              "status": 404,
+              "bytes": 39,
+              "elapsed_ms": 3.346
+            },
+            {
+              "ok": false,
+              "partial": false,
+              "status": 404,
+              "bytes": 39,
+              "elapsed_ms": 3.494
+            },
+            {
+              "ok": false,
+              "partial": false,
+              "status": 404,
+              "bytes": 39,
+              "elapsed_ms": 3.209
+            },
+            {
+              "ok": false,
+              "partial": false,
+              "status": 404,
+              "bytes": 39,
+              "elapsed_ms": 2.77
+            },
+            {
+              "ok": false,
+              "partial": false,
+              "status": 404,
+              "bytes": 39,
+              "elapsed_ms": 1.379
+            },
+            {
+              "ok": false,
+              "partial": false,
+              "status": 404,
+              "bytes": 39,
+              "elapsed_ms": 1.36
+            },
+            {
+              "ok": false,
+              "partial": false,
+              "status": 404,
+              "bytes": 39,
+              "elapsed_ms": 1.447
+            },
+            {
+              "ok": false,
+              "partial": false,
+              "status": 404,
+              "bytes": 39,
+              "elapsed_ms": 1.679
+            },
+            {
+              "ok": false,
+              "partial": false,
+              "status": 404,
+              "bytes": 39,
+              "elapsed_ms": 1.749
+            },
+            {
+              "ok": false,
+              "partial": false,
+              "status": 404,
+              "bytes": 39,
+              "elapsed_ms": 1.745
+            },
+            {
+              "ok": false,
+              "partial": false,
+              "status": 404,
+              "bytes": 39,
+              "elapsed_ms": 1.598
+            },
+            {
+              "ok": false,
+              "partial": false,
+              "status": 404,
+              "bytes": 39,
+              "elapsed_ms": 1.584
+            },
+            {
+              "ok": false,
+              "partial": false,
+              "status": 404,
+              "bytes": 39,
+              "elapsed_ms": 1.313
+            },
+            {
+              "ok": false,
+              "partial": false,
+              "status": 404,
+              "bytes": 39,
+              "elapsed_ms": 1.176
+            },
+            {
+              "ok": false,
+              "partial": false,
+              "status": 404,
+              "bytes": 39,
+              "elapsed_ms": 1.303
+            }
+          ],
+          "warmup": {
+            "ok": false,
+            "partial": false,
+            "status": 404,
+            "bytes": 39,
+            "elapsed_ms": 3.138
+          }
+        },
+        "cache_stats": {
+          "requests": 30,
+          "successful": 30,
+          "failed": 0,
+          "partial": 0,
+          "median_ms": 1.394,
+          "p95_ms": 2.095,
+          "samples": [
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 173,
+              "elapsed_ms": 1.421
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 173,
+              "elapsed_ms": 1.816
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 173,
+              "elapsed_ms": 2.095
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 173,
+              "elapsed_ms": 1.676
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 173,
+              "elapsed_ms": 1.344
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 173,
+              "elapsed_ms": 1.217
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 173,
+              "elapsed_ms": 2.091
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 173,
+              "elapsed_ms": 1.186
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 173,
+              "elapsed_ms": 1.41
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 173,
+              "elapsed_ms": 1.378
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 173,
+              "elapsed_ms": 1.55
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 173,
+              "elapsed_ms": 1.311
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 173,
+              "elapsed_ms": 1.808
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 173,
+              "elapsed_ms": 1.177
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 173,
+              "elapsed_ms": 1.265
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 173,
+              "elapsed_ms": 1.301
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 173,
+              "elapsed_ms": 1.317
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 173,
+              "elapsed_ms": 1.317
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 173,
+              "elapsed_ms": 1.185
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 173,
+              "elapsed_ms": 1.37
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 173,
+              "elapsed_ms": 1.44
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 173,
+              "elapsed_ms": 1.539
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 173,
+              "elapsed_ms": 2.494
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 173,
+              "elapsed_ms": 1.49
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 173,
+              "elapsed_ms": 1.16
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 173,
+              "elapsed_ms": 1.496
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 173,
+              "elapsed_ms": 1.77
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 173,
+              "elapsed_ms": 1.885
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 173,
+              "elapsed_ms": 1.077
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 173,
+              "elapsed_ms": 0.986
+            }
+          ],
+          "warmup": {
+            "ok": true,
+            "partial": false,
+            "status": 200,
+            "bytes": 173,
+            "elapsed_ms": 1.95
+          }
+        },
+        "runtime_diagnostics": {
+          "requests": 30,
+          "successful": 0,
+          "failed": 30,
+          "partial": 0,
+          "median_ms": null,
+          "p95_ms": null,
+          "samples": [
+            {
+              "ok": false,
+              "partial": false,
+              "status": 404,
+              "bytes": 43,
+              "metrics": {},
+              "elapsed_ms": 1.611
+            },
+            {
+              "ok": false,
+              "partial": false,
+              "status": 404,
+              "bytes": 43,
+              "metrics": {},
+              "elapsed_ms": 2.085
+            },
+            {
+              "ok": false,
+              "partial": false,
+              "status": 404,
+              "bytes": 43,
+              "metrics": {},
+              "elapsed_ms": 2.065
+            },
+            {
+              "ok": false,
+              "partial": false,
+              "status": 404,
+              "bytes": 43,
+              "metrics": {},
+              "elapsed_ms": 1.948
+            },
+            {
+              "ok": false,
+              "partial": false,
+              "status": 404,
+              "bytes": 43,
+              "metrics": {},
+              "elapsed_ms": 2.001
+            },
+            {
+              "ok": false,
+              "partial": false,
+              "status": 404,
+              "bytes": 43,
+              "metrics": {},
+              "elapsed_ms": 0.985
+            },
+            {
+              "ok": false,
+              "partial": false,
+              "status": 404,
+              "bytes": 43,
+              "metrics": {},
+              "elapsed_ms": 4.081
+            },
+            {
+              "ok": false,
+              "partial": false,
+              "status": 404,
+              "bytes": 43,
+              "metrics": {},
+              "elapsed_ms": 4.035
+            },
+            {
+              "ok": false,
+              "partial": false,
+              "status": 404,
+              "bytes": 43,
+              "metrics": {},
+              "elapsed_ms": 4.024
+            },
+            {
+              "ok": false,
+              "partial": false,
+              "status": 404,
+              "bytes": 43,
+              "metrics": {},
+              "elapsed_ms": 3.919
+            },
+            {
+              "ok": false,
+              "partial": false,
+              "status": 404,
+              "bytes": 43,
+              "metrics": {},
+              "elapsed_ms": 1.53
+            },
+            {
+              "ok": false,
+              "partial": false,
+              "status": 404,
+              "bytes": 43,
+              "metrics": {},
+              "elapsed_ms": 1.45
+            },
+            {
+              "ok": false,
+              "partial": false,
+              "status": 404,
+              "bytes": 43,
+              "metrics": {},
+              "elapsed_ms": 1.136
+            },
+            {
+              "ok": false,
+              "partial": false,
+              "status": 404,
+              "bytes": 43,
+              "metrics": {},
+              "elapsed_ms": 1.292
+            },
+            {
+              "ok": false,
+              "partial": false,
+              "status": 404,
+              "bytes": 43,
+              "metrics": {},
+              "elapsed_ms": 1.22
+            },
+            {
+              "ok": false,
+              "partial": false,
+              "status": 404,
+              "bytes": 43,
+              "metrics": {},
+              "elapsed_ms": 1.164
+            },
+            {
+              "ok": false,
+              "partial": false,
+              "status": 404,
+              "bytes": 43,
+              "metrics": {},
+              "elapsed_ms": 1.312
+            },
+            {
+              "ok": false,
+              "partial": false,
+              "status": 404,
+              "bytes": 43,
+              "metrics": {},
+              "elapsed_ms": 1.443
+            },
+            {
+              "ok": false,
+              "partial": false,
+              "status": 404,
+              "bytes": 43,
+              "metrics": {},
+              "elapsed_ms": 1.408
+            },
+            {
+              "ok": false,
+              "partial": false,
+              "status": 404,
+              "bytes": 43,
+              "metrics": {},
+              "elapsed_ms": 1.741
+            },
+            {
+              "ok": false,
+              "partial": false,
+              "status": 404,
+              "bytes": 43,
+              "metrics": {},
+              "elapsed_ms": 1.256
+            },
+            {
+              "ok": false,
+              "partial": false,
+              "status": 404,
+              "bytes": 43,
+              "metrics": {},
+              "elapsed_ms": 1.308
+            },
+            {
+              "ok": false,
+              "partial": false,
+              "status": 404,
+              "bytes": 43,
+              "metrics": {},
+              "elapsed_ms": 1.428
+            },
+            {
+              "ok": false,
+              "partial": false,
+              "status": 404,
+              "bytes": 43,
+              "metrics": {},
+              "elapsed_ms": 1.288
+            },
+            {
+              "ok": false,
+              "partial": false,
+              "status": 404,
+              "bytes": 43,
+              "metrics": {},
+              "elapsed_ms": 1.602
+            },
+            {
+              "ok": false,
+              "partial": false,
+              "status": 404,
+              "bytes": 43,
+              "metrics": {},
+              "elapsed_ms": 1.201
+            },
+            {
+              "ok": false,
+              "partial": false,
+              "status": 404,
+              "bytes": 43,
+              "metrics": {},
+              "elapsed_ms": 1.21
+            },
+            {
+              "ok": false,
+              "partial": false,
+              "status": 404,
+              "bytes": 43,
+              "metrics": {},
+              "elapsed_ms": 1.251
+            },
+            {
+              "ok": false,
+              "partial": false,
+              "status": 404,
+              "bytes": 43,
+              "metrics": {},
+              "elapsed_ms": 0.978
+            },
+            {
+              "ok": false,
+              "partial": false,
+              "status": 404,
+              "bytes": 43,
+              "metrics": {},
+              "elapsed_ms": 1.033
+            }
+          ],
+          "warmup": {
+            "ok": false,
+            "partial": false,
+            "status": 404,
+            "bytes": 43,
+            "metrics": {},
+            "elapsed_ms": 0.942
+          }
+        }
+      }
+    },
+    "candidate": {
+      "revision": "c4abfbb47a8be4045593d84702674d9f49289e09",
+      "cases": {
+        "source_warm": {
+          "requests": 30,
+          "successful": 30,
+          "failed": 0,
+          "partial": 0,
+          "median_ms": 2.1985,
+          "p95_ms": 4.59,
+          "samples": [
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 853,
+              "source_sha256": "1f71b4a14503c6a5dfa38f4f08d68346bcd6d0844dd86a5069ac1f18aea0a38f",
+              "elapsed_ms": 3.052
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 853,
+              "source_sha256": "1f71b4a14503c6a5dfa38f4f08d68346bcd6d0844dd86a5069ac1f18aea0a38f",
+              "elapsed_ms": 4.59
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 853,
+              "source_sha256": "1f71b4a14503c6a5dfa38f4f08d68346bcd6d0844dd86a5069ac1f18aea0a38f",
+              "elapsed_ms": 4.019
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 853,
+              "source_sha256": "1f71b4a14503c6a5dfa38f4f08d68346bcd6d0844dd86a5069ac1f18aea0a38f",
+              "elapsed_ms": 5.221
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 853,
+              "source_sha256": "1f71b4a14503c6a5dfa38f4f08d68346bcd6d0844dd86a5069ac1f18aea0a38f",
+              "elapsed_ms": 3.536
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 853,
+              "source_sha256": "1f71b4a14503c6a5dfa38f4f08d68346bcd6d0844dd86a5069ac1f18aea0a38f",
+              "elapsed_ms": 3.454
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 853,
+              "source_sha256": "1f71b4a14503c6a5dfa38f4f08d68346bcd6d0844dd86a5069ac1f18aea0a38f",
+              "elapsed_ms": 2.375
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 853,
+              "source_sha256": "1f71b4a14503c6a5dfa38f4f08d68346bcd6d0844dd86a5069ac1f18aea0a38f",
+              "elapsed_ms": 2.705
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 853,
+              "source_sha256": "1f71b4a14503c6a5dfa38f4f08d68346bcd6d0844dd86a5069ac1f18aea0a38f",
+              "elapsed_ms": 2.703
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 853,
+              "source_sha256": "1f71b4a14503c6a5dfa38f4f08d68346bcd6d0844dd86a5069ac1f18aea0a38f",
+              "elapsed_ms": 2.554
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 853,
+              "source_sha256": "1f71b4a14503c6a5dfa38f4f08d68346bcd6d0844dd86a5069ac1f18aea0a38f",
+              "elapsed_ms": 2.899
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 853,
+              "source_sha256": "1f71b4a14503c6a5dfa38f4f08d68346bcd6d0844dd86a5069ac1f18aea0a38f",
+              "elapsed_ms": 2.863
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 853,
+              "source_sha256": "1f71b4a14503c6a5dfa38f4f08d68346bcd6d0844dd86a5069ac1f18aea0a38f",
+              "elapsed_ms": 2.165
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 853,
+              "source_sha256": "1f71b4a14503c6a5dfa38f4f08d68346bcd6d0844dd86a5069ac1f18aea0a38f",
+              "elapsed_ms": 2.232
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 853,
+              "source_sha256": "1f71b4a14503c6a5dfa38f4f08d68346bcd6d0844dd86a5069ac1f18aea0a38f",
+              "elapsed_ms": 1.793
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 853,
+              "source_sha256": "1f71b4a14503c6a5dfa38f4f08d68346bcd6d0844dd86a5069ac1f18aea0a38f",
+              "elapsed_ms": 1.853
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 853,
+              "source_sha256": "1f71b4a14503c6a5dfa38f4f08d68346bcd6d0844dd86a5069ac1f18aea0a38f",
+              "elapsed_ms": 1.97
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 853,
+              "source_sha256": "1f71b4a14503c6a5dfa38f4f08d68346bcd6d0844dd86a5069ac1f18aea0a38f",
+              "elapsed_ms": 1.96
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 853,
+              "source_sha256": "1f71b4a14503c6a5dfa38f4f08d68346bcd6d0844dd86a5069ac1f18aea0a38f",
+              "elapsed_ms": 1.835
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 853,
+              "source_sha256": "1f71b4a14503c6a5dfa38f4f08d68346bcd6d0844dd86a5069ac1f18aea0a38f",
+              "elapsed_ms": 1.613
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 853,
+              "source_sha256": "1f71b4a14503c6a5dfa38f4f08d68346bcd6d0844dd86a5069ac1f18aea0a38f",
+              "elapsed_ms": 1.663
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 853,
+              "source_sha256": "1f71b4a14503c6a5dfa38f4f08d68346bcd6d0844dd86a5069ac1f18aea0a38f",
+              "elapsed_ms": 1.722
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 853,
+              "source_sha256": "1f71b4a14503c6a5dfa38f4f08d68346bcd6d0844dd86a5069ac1f18aea0a38f",
+              "elapsed_ms": 1.832
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 853,
+              "source_sha256": "1f71b4a14503c6a5dfa38f4f08d68346bcd6d0844dd86a5069ac1f18aea0a38f",
+              "elapsed_ms": 1.88
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 853,
+              "source_sha256": "1f71b4a14503c6a5dfa38f4f08d68346bcd6d0844dd86a5069ac1f18aea0a38f",
+              "elapsed_ms": 1.872
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 853,
+              "source_sha256": "1f71b4a14503c6a5dfa38f4f08d68346bcd6d0844dd86a5069ac1f18aea0a38f",
+              "elapsed_ms": 1.661
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 853,
+              "source_sha256": "1f71b4a14503c6a5dfa38f4f08d68346bcd6d0844dd86a5069ac1f18aea0a38f",
+              "elapsed_ms": 1.808
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 853,
+              "source_sha256": "1f71b4a14503c6a5dfa38f4f08d68346bcd6d0844dd86a5069ac1f18aea0a38f",
+              "elapsed_ms": 1.898
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 853,
+              "source_sha256": "1f71b4a14503c6a5dfa38f4f08d68346bcd6d0844dd86a5069ac1f18aea0a38f",
+              "elapsed_ms": 2.904
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 853,
+              "source_sha256": "1f71b4a14503c6a5dfa38f4f08d68346bcd6d0844dd86a5069ac1f18aea0a38f",
+              "elapsed_ms": 2.401
+            }
+          ],
+          "warmup": {
+            "ok": true,
+            "partial": false,
+            "status": 200,
+            "bytes": 853,
+            "source_sha256": "1f71b4a14503c6a5dfa38f4f08d68346bcd6d0844dd86a5069ac1f18aea0a38f",
+            "elapsed_ms": 44.188
+          }
+        },
+        "search_repeated": {
+          "requests": 30,
+          "successful": 30,
+          "failed": 0,
+          "partial": 0,
+          "median_ms": 1.8085,
+          "p95_ms": 2.705,
+          "samples": [
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 386,
+              "result_count": 1,
+              "elapsed_ms": 2.234
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 386,
+              "result_count": 1,
+              "elapsed_ms": 2.443
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 386,
+              "result_count": 1,
+              "elapsed_ms": 2.705
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 386,
+              "result_count": 1,
+              "elapsed_ms": 3.018
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 386,
+              "result_count": 1,
+              "elapsed_ms": 1.662
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 386,
+              "result_count": 1,
+              "elapsed_ms": 1.72
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 386,
+              "result_count": 1,
+              "elapsed_ms": 2.205
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 386,
+              "result_count": 1,
+              "elapsed_ms": 2.17
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 386,
+              "result_count": 1,
+              "elapsed_ms": 2.012
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 386,
+              "result_count": 1,
+              "elapsed_ms": 2.156
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 386,
+              "result_count": 1,
+              "elapsed_ms": 1.579
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 386,
+              "result_count": 1,
+              "elapsed_ms": 1.547
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 386,
+              "result_count": 1,
+              "elapsed_ms": 1.72
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 386,
+              "result_count": 1,
+              "elapsed_ms": 1.615
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 386,
+              "result_count": 1,
+              "elapsed_ms": 1.662
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 386,
+              "result_count": 1,
+              "elapsed_ms": 1.679
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 386,
+              "result_count": 1,
+              "elapsed_ms": 1.7
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 386,
+              "result_count": 1,
+              "elapsed_ms": 1.712
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 386,
+              "result_count": 1,
+              "elapsed_ms": 1.627
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 386,
+              "result_count": 1,
+              "elapsed_ms": 1.727
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 386,
+              "result_count": 1,
+              "elapsed_ms": 1.806
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 386,
+              "result_count": 1,
+              "elapsed_ms": 1.754
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 386,
+              "result_count": 1,
+              "elapsed_ms": 1.811
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 386,
+              "result_count": 1,
+              "elapsed_ms": 1.818
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 386,
+              "result_count": 1,
+              "elapsed_ms": 1.791
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 386,
+              "result_count": 1,
+              "elapsed_ms": 1.861
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 386,
+              "result_count": 1,
+              "elapsed_ms": 2.114
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 386,
+              "result_count": 1,
+              "elapsed_ms": 1.981
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 386,
+              "result_count": 1,
+              "elapsed_ms": 1.909
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 386,
+              "result_count": 1,
+              "elapsed_ms": 1.835
+            }
+          ],
+          "warmup": {
+            "ok": true,
+            "partial": false,
+            "status": 200,
+            "bytes": 386,
+            "result_count": 1,
+            "elapsed_ms": 83.866
+          }
+        },
+        "batch_source": {
+          "requests": 30,
+          "successful": 30,
+          "failed": 0,
+          "partial": 0,
+          "median_ms": 2.185,
+          "p95_ms": 3.117,
+          "samples": [
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 1115,
+              "elapsed_ms": 3.936
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 1115,
+              "elapsed_ms": 2.559
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 1115,
+              "elapsed_ms": 2.899
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 1115,
+              "elapsed_ms": 3.117
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 1115,
+              "elapsed_ms": 2.246
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 1115,
+              "elapsed_ms": 2.007
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 1115,
+              "elapsed_ms": 2.765
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 1115,
+              "elapsed_ms": 1.925
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 1115,
+              "elapsed_ms": 1.894
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 1115,
+              "elapsed_ms": 1.787
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 1115,
+              "elapsed_ms": 1.855
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 1115,
+              "elapsed_ms": 1.768
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 1115,
+              "elapsed_ms": 1.929
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 1115,
+              "elapsed_ms": 2.372
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 1115,
+              "elapsed_ms": 1.779
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 1115,
+              "elapsed_ms": 2.201
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 1115,
+              "elapsed_ms": 2.32
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 1115,
+              "elapsed_ms": 2.343
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 1115,
+              "elapsed_ms": 2.87
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 1115,
+              "elapsed_ms": 2.39
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 1115,
+              "elapsed_ms": 2.629
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 1115,
+              "elapsed_ms": 1.95
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 1115,
+              "elapsed_ms": 2.248
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 1115,
+              "elapsed_ms": 2.416
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 1115,
+              "elapsed_ms": 1.998
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 1115,
+              "elapsed_ms": 2.169
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 1115,
+              "elapsed_ms": 1.968
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 1115,
+              "elapsed_ms": 1.768
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 1115,
+              "elapsed_ms": 1.764
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 1115,
+              "elapsed_ms": 1.786
+            }
+          ],
+          "warmup": {
+            "ok": true,
+            "partial": false,
+            "status": 200,
+            "bytes": 1115,
+            "elapsed_ms": 11.604
+          }
+        },
+        "cache_stats": {
+          "requests": 30,
+          "successful": 30,
+          "failed": 0,
+          "partial": 0,
+          "median_ms": 1.698,
+          "p95_ms": 2.936,
+          "samples": [
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 302,
+              "elapsed_ms": 2.936
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 302,
+              "elapsed_ms": 2.281
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 302,
+              "elapsed_ms": 3.494
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 302,
+              "elapsed_ms": 2.747
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 302,
+              "elapsed_ms": 1.755
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 302,
+              "elapsed_ms": 1.707
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 302,
+              "elapsed_ms": 2.231
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 302,
+              "elapsed_ms": 1.244
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 302,
+              "elapsed_ms": 2.743
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 302,
+              "elapsed_ms": 1.689
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 302,
+              "elapsed_ms": 2.742
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 302,
+              "elapsed_ms": 1.844
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 302,
+              "elapsed_ms": 1.856
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 302,
+              "elapsed_ms": 2.797
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 302,
+              "elapsed_ms": 2.191
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 302,
+              "elapsed_ms": 2.534
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 302,
+              "elapsed_ms": 2.224
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 302,
+              "elapsed_ms": 1.342
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 302,
+              "elapsed_ms": 1.679
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 302,
+              "elapsed_ms": 1.548
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 302,
+              "elapsed_ms": 1.474
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 302,
+              "elapsed_ms": 1.367
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 302,
+              "elapsed_ms": 1.286
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 302,
+              "elapsed_ms": 1.344
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 302,
+              "elapsed_ms": 1.313
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 302,
+              "elapsed_ms": 1.24
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 302,
+              "elapsed_ms": 1.356
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 302,
+              "elapsed_ms": 1.104
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 302,
+              "elapsed_ms": 1.284
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 302,
+              "elapsed_ms": 1.207
+            }
+          ],
+          "warmup": {
+            "ok": true,
+            "partial": false,
+            "status": 200,
+            "bytes": 302,
+            "elapsed_ms": 1.943
+          }
+        },
+        "runtime_diagnostics": {
+          "requests": 30,
+          "successful": 30,
+          "failed": 0,
+          "partial": 0,
+          "median_ms": 1.7275,
+          "p95_ms": 2.586,
+          "samples": [
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 945,
+              "metrics": {
+                "heap_used_bytes": 88422000,
+                "heap_max_bytes": 15686696960,
+                "thread_count": 32
+              },
+              "elapsed_ms": 1.624
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 945,
+              "metrics": {
+                "heap_used_bytes": 88422000,
+                "heap_max_bytes": 15686696960,
+                "thread_count": 32
+              },
+              "elapsed_ms": 2.451
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 945,
+              "metrics": {
+                "heap_used_bytes": 88422000,
+                "heap_max_bytes": 15686696960,
+                "thread_count": 32
+              },
+              "elapsed_ms": 2.7
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 945,
+              "metrics": {
+                "heap_used_bytes": 88422000,
+                "heap_max_bytes": 15686696960,
+                "thread_count": 32
+              },
+              "elapsed_ms": 1.842
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 945,
+              "metrics": {
+                "heap_used_bytes": 88422000,
+                "heap_max_bytes": 15686696960,
+                "thread_count": 32
+              },
+              "elapsed_ms": 1.658
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 945,
+              "metrics": {
+                "heap_used_bytes": 88422000,
+                "heap_max_bytes": 15686696960,
+                "thread_count": 32
+              },
+              "elapsed_ms": 1.688
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 945,
+              "metrics": {
+                "heap_used_bytes": 88422000,
+                "heap_max_bytes": 15686696960,
+                "thread_count": 32
+              },
+              "elapsed_ms": 1.582
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 945,
+              "metrics": {
+                "heap_used_bytes": 88422000,
+                "heap_max_bytes": 15686696960,
+                "thread_count": 32
+              },
+              "elapsed_ms": 1.742
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 945,
+              "metrics": {
+                "heap_used_bytes": 88422000,
+                "heap_max_bytes": 15686696960,
+                "thread_count": 32
+              },
+              "elapsed_ms": 1.77
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 945,
+              "metrics": {
+                "heap_used_bytes": 88422000,
+                "heap_max_bytes": 15686696960,
+                "thread_count": 32
+              },
+              "elapsed_ms": 1.744
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 945,
+              "metrics": {
+                "heap_used_bytes": 88422000,
+                "heap_max_bytes": 15686696960,
+                "thread_count": 32
+              },
+              "elapsed_ms": 1.832
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 945,
+              "metrics": {
+                "heap_used_bytes": 88422000,
+                "heap_max_bytes": 15686696960,
+                "thread_count": 32
+              },
+              "elapsed_ms": 1.693
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 945,
+              "metrics": {
+                "heap_used_bytes": 88422000,
+                "heap_max_bytes": 15686696960,
+                "thread_count": 32
+              },
+              "elapsed_ms": 1.945
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 945,
+              "metrics": {
+                "heap_used_bytes": 88422000,
+                "heap_max_bytes": 15686696960,
+                "thread_count": 32
+              },
+              "elapsed_ms": 1.781
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 945,
+              "metrics": {
+                "heap_used_bytes": 88422000,
+                "heap_max_bytes": 15686696960,
+                "thread_count": 32
+              },
+              "elapsed_ms": 1.741
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 945,
+              "metrics": {
+                "heap_used_bytes": 88422000,
+                "heap_max_bytes": 15686696960,
+                "thread_count": 32
+              },
+              "elapsed_ms": 1.741
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 945,
+              "metrics": {
+                "heap_used_bytes": 88422000,
+                "heap_max_bytes": 15686696960,
+                "thread_count": 32
+              },
+              "elapsed_ms": 1.642
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 945,
+              "metrics": {
+                "heap_used_bytes": 88422000,
+                "heap_max_bytes": 15686696960,
+                "thread_count": 32
+              },
+              "elapsed_ms": 1.872
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 945,
+              "metrics": {
+                "heap_used_bytes": 88422000,
+                "heap_max_bytes": 15686696960,
+                "thread_count": 32
+              },
+              "elapsed_ms": 1.732
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 945,
+              "metrics": {
+                "heap_used_bytes": 88422000,
+                "heap_max_bytes": 15686696960,
+                "thread_count": 32
+              },
+              "elapsed_ms": 1.663
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 945,
+              "metrics": {
+                "heap_used_bytes": 88422000,
+                "heap_max_bytes": 15686696960,
+                "thread_count": 32
+              },
+              "elapsed_ms": 1.584
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 945,
+              "metrics": {
+                "heap_used_bytes": 88422000,
+                "heap_max_bytes": 15686696960,
+                "thread_count": 32
+              },
+              "elapsed_ms": 1.404
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 945,
+              "metrics": {
+                "heap_used_bytes": 88422000,
+                "heap_max_bytes": 15686696960,
+                "thread_count": 32
+              },
+              "elapsed_ms": 2.586
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 945,
+              "metrics": {
+                "heap_used_bytes": 88422000,
+                "heap_max_bytes": 15686696960,
+                "thread_count": 32
+              },
+              "elapsed_ms": 1.258
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 945,
+              "metrics": {
+                "heap_used_bytes": 88422000,
+                "heap_max_bytes": 15686696960,
+                "thread_count": 32
+              },
+              "elapsed_ms": 1.394
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 945,
+              "metrics": {
+                "heap_used_bytes": 88422000,
+                "heap_max_bytes": 15686696960,
+                "thread_count": 32
+              },
+              "elapsed_ms": 1.502
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 945,
+              "metrics": {
+                "heap_used_bytes": 88422000,
+                "heap_max_bytes": 15686696960,
+                "thread_count": 32
+              },
+              "elapsed_ms": 1.592
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 945,
+              "metrics": {
+                "heap_used_bytes": 88422000,
+                "heap_max_bytes": 15686696960,
+                "thread_count": 32
+              },
+              "elapsed_ms": 1.782
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 945,
+              "metrics": {
+                "heap_used_bytes": 88422000,
+                "heap_max_bytes": 15686696960,
+                "thread_count": 32
+              },
+              "elapsed_ms": 1.524
+            },
+            {
+              "ok": true,
+              "partial": false,
+              "status": 200,
+              "bytes": 945,
+              "metrics": {
+                "heap_used_bytes": 88422000,
+                "heap_max_bytes": 15686696960,
+                "thread_count": 32
+              },
+              "elapsed_ms": 1.723
+            }
+          ],
+          "warmup": {
+            "ok": true,
+            "partial": false,
+            "status": 200,
+            "bytes": 945,
+            "metrics": {
+              "heap_used_bytes": 88422000,
+              "heap_max_bytes": 15686696960,
+              "thread_count": 32
+            },
+            "elapsed_ms": 4.308
+          }
+        }
+      }
+    }
+  },
+  "limits": [
+    "Fixtures must be loaded manually before running; fixture hash identifies the supplied local file.",
+    "Warm repeated reads only; no cold-cache claim or process RSS measurement.",
+    "Unsupported and partial results are not successful performance comparisons."
+  ],
+  "source_equal": true
+}
