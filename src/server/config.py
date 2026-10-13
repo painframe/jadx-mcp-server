@@ -23,6 +23,13 @@ JADX_HTTP_BASE = f"http://{JADX_HOST}:{JADX_PORT}"
 # HTTP read timeouts (seconds) for plugin communication
 JADX_DEFAULT_TIMEOUT = 60.0
 JADX_SEARCH_TIMEOUT = 3600.0
+MUTATING_ENDPOINTS = frozenset({"rename-class", "rename-method", "rename-field",
+    "rename-package", "rename-variable", "add-comment", "cache-clear", "open-apk"})
+
+
+def is_mutation(method: str, endpoint: str) -> bool:
+    return method != "GET" or endpoint.strip("/") in MUTATING_ENDPOINTS
+
 
 # Logging Setup
 logger = logging.getLogger("jadx-mcp-server")
@@ -88,9 +95,12 @@ def _decode_response(response: httpx.Response, endpoint: str):
     if response.is_error:
         # Never echo arbitrary error bodies: they may contain credentials or HTML.
         if isinstance(payload, dict) and isinstance(payload.get("error"), str):
-            return {**error_response(payload["error"], "http_error", endpoint=endpoint,
-                                    status=response.status_code,
-                                    retryable=response.status_code >= 500), **payload}
+            message = "".join(c if c.isprintable() else " " for c in payload["error"][:512])
+            result = error_response(message, endpoint=endpoint, status=response.status_code)
+            result["code"] = payload.get("code", "http_error") if isinstance(payload.get("code", "http_error"), str) else "http_error"
+            result["source"] = "jadx"
+            result["retryable"] = payload.get("retryable") is True
+            return result
         return error_response(f"HTTP error {response.status_code} from JADX plugin", "http_error",
                               endpoint=endpoint, status=response.status_code,
                               retryable=response.status_code >= 500)
@@ -122,14 +132,17 @@ async def _request_jadx(method: str, endpoint: str, params=None,
         async with httpx.AsyncClient(trust_env=False) as client:
             response = await client.request(method, url, params=params or {},
                                             json=json_body, timeout=timeout)
-        return _decode_response(response, endpoint)
+        result = _decode_response(response, endpoint)
+        if isinstance(result, dict) and result.get("error") and is_mutation(method, endpoint):
+            result["retryable"] = False
+        return result
     except httpx.TimeoutException:
         return error_response(
             f"Request timed out after {timeout}s; operation may still be running in JADX",
-            "timeout", retryable=method == "GET", endpoint=endpoint)
+            "timeout", retryable=not is_mutation(method, endpoint), endpoint=endpoint)
     except httpx.HTTPError:
         return error_response("Cannot communicate with JADX plugin", "unavailable",
-                              retryable=method == "GET", endpoint=endpoint)
+                              retryable=not is_mutation(method, endpoint), endpoint=endpoint)
 
 
 async def get_from_jadx(endpoint: str, params: dict[str, Any] | None = None,

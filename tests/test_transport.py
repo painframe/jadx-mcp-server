@@ -42,3 +42,32 @@ class TransportTests(unittest.IsolatedAsyncioTestCase):
     async def test_error_body_is_not_echoed(self):
         result = await self.request(config.get_from_jadx, httpx.Response(500, text='secret credential'))
         self.assertNotIn('secret', str(result))
+
+    async def test_actual_class_tool_preserves_backend_list(self):
+        from src.server.tools import class_tools
+        with patch.object(class_tools, 'get_from_jadx', AsyncMock(return_value=['a.Class'])):
+            result = await class_tools.get_all_classes()
+        self.assertEqual(result['items'], ['a.Class'])
+
+    async def test_legacy_get_mutation_timeout_is_not_retryable(self):
+        real_client = httpx.AsyncClient
+        def fail(request):
+            raise httpx.ReadTimeout('late')
+        with patch.object(config.httpx, 'AsyncClient', side_effect=lambda **kw: real_client(
+                transport=httpx.MockTransport(fail), **kw)):
+            result = await config.get_from_jadx('rename-class')
+        self.assertFalse(result['retryable'])
+
+    async def test_error_metadata_is_bounded_and_transport_owned(self):
+        result = await self.request(config.get_from_jadx, httpx.Response(409, json={
+            'error': 'x' * 10000, 'status': 200, 'endpoint': 'other', 'source': 'evil'}))
+        self.assertEqual(len(result['error']), 512)
+        self.assertEqual(result['status'], 409)
+        self.assertEqual(result['endpoint'], 'example')
+        self.assertEqual(result['source'], 'jadx')
+
+    async def test_malformed_transform_becomes_error(self):
+        result = await PaginationUtils.get_paginated_data('classes',
+            fetch_function=AsyncMock(return_value={'items': [None]}),
+            item_transformer=lambda item: item['name'])
+        self.assertEqual(result['code'], 'invalid_response')

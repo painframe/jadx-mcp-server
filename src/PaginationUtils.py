@@ -111,18 +111,26 @@ class PaginationUtils:
         if count > 0:
             params["limit"] = count
         response = await fetch_function(endpoint, params)
-        if isinstance(response, list):
-            response = {"items": response}
+        direct_items = response if isinstance(response, list) else None
+        if direct_items is not None:
+            response = {"items": direct_items}
         if not isinstance(response, dict):
             return error_response("Expected an object or list", endpoint=endpoint)
         if response.get("error"):
             return response
-        items = data_extractor(response) if data_extractor else next(
-            (response[key] for key in ("classes", "methods", "fields", "items") if key in response), [])
+        try:
+            items = direct_items if direct_items is not None else (
+                data_extractor(response) if data_extractor else next(
+                    (response[key] for key in ("classes", "methods", "fields", "items") if key in response), []))
+        except (KeyError, TypeError, ValueError, AttributeError):
+            return error_response("Invalid paginated response items", endpoint=endpoint)
         if not isinstance(items, list) or not isinstance(response.get("pagination", {}), dict):
             return error_response("Invalid paginated response", endpoint=endpoint)
         if item_transformer:
-            items = [item_transformer(item) for item in items]
+            try:
+                items = [item_transformer(item) for item in items]
+            except (KeyError, TypeError, ValueError, AttributeError):
+                return error_response("Invalid paginated response item", endpoint=endpoint)
         result = PaginationUtils._build_standardized_response(response, items)
         # Keep search completion metadata alongside standardized pagination.
         for key in ("partial", "timed_out", "search_id", "warnings"):
