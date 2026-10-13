@@ -121,3 +121,10 @@ Each feature is a separate stacked branch. Java counterparts are in painframe/ja
 - Adaptation: schema-visible optional instance on all current tools, ContextVar routing, canonical local-admin registry, distinct backend credential references, bounded opt-in loopback discovery, validated plugin health identity. Existing comments/debugging tools retained. No MCP URL registration.
 - Validation: 47 unittest cases; actual concurrent FastMCP/HTTP calls select independent backends, schema checks cover every tool, alias collision/load atomicity and false health positives tested; changed-file Ruff/Bandit clean.
 - Limits: administrator files are trusted; multi-user visibility/authorization arrives in feature19. Registry discovery does not bypass plugin authentication.
+
+## 19 multiuser-authorization
+
+- Donor: xjoker/jadx-ai-mcp @ 30337f6f072aa360e9099c99e99fb330d44e8986.
+- Adaptation: FastMCP TokenVerifier backed by local administrator policy and environment-held credentials; constant-time comparisons, explicit canonical per-instance read/write grants, default-deny. HTTP requires a policy, stdio remains trusted local owner. Both routed tools and shared transport enforce permissions before credentials/caches/queues. Listing/refresh filter instances; GET mutations are writes and batch reads stay reads.
+- Validation: 52 unittest cases; actual ASGI HTTP tests prove missing-token401, authorized dispatch, forbidden canonical/alias/port selection, read-only mutation rejection, filtered listing and absence of backend URLs/tokens; direct unauthenticated dispatch fails closed. Changed-file Ruff/Bandit clean.
+- Limits: TLS termination and administrator policy/token lifecycle are external. MCP forbidden results carry status403 inside the standard result envelope, not an HTTP403 transport status. Client token rotation requires restart.
