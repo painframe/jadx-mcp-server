@@ -74,3 +74,11 @@ class InstanceTests(unittest.IsolatedAsyncioTestCase):
     async def test_control_lane_cannot_collide_with_instance_id(self):
         from src.server.scheduling import gate_for
         self.assertIsNot(gate_for(('a', 'control')), gate_for('a#control'))
+
+    async def test_malformed_default_is_an_error_value(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / 'registry.json'
+            for default in ([], {}):
+                path.write_text(json.dumps({'default': default, 'instances': [
+                    {'id': 'a', 'url': 'http://localhost:1'}]}))
+                self.assertIsNotNone(instances.load_registry(str(path)))

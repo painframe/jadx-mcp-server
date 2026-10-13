@@ -54,7 +54,7 @@ def load_registry(path: str) -> str | None:
         urls.add(url)
         proposed[name] = {**item, 'id': name, 'url': url, 'aliases': aliases}
     default = document.get('default')
-    if default is not None and default not in proposed:
+    if default is not None and (not isinstance(default, str) or default not in proposed):
         return 'Default instance must name a registered ID'
     registry, default_instance = proposed, default
     return None
