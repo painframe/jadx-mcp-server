@@ -432,12 +432,12 @@ async def get_project_operation(operation_id: str) -> dict:
 
 
 @instance_tool(mcp)
-async def get_jvm_info(section: jvm_tools.JvmSection) -> dict:
+async def get_jvm_info(section: jvm_tools.JvmSection, offset: int = 0, count: int = 100) -> dict:
     """Inspect JAR manifest, SPI services, entry points, structural dependencies, properties or packages.
 
     Dependency summaries describe references visible in bytecode, not resolved runtime dependencies.
     """
-    return await jvm_tools.get_jvm_info(section)
+    return await jvm_tools.get_jvm_info(section, offset, count)
 
 
 @mcp.tool()
