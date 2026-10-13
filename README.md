@@ -10,7 +10,7 @@
 ![GitHub release (latest by SemVer)](https://img.shields.io/github/downloads/zinja-coder/jadx-ai-mcp/latest/total)
 ![Latest release](https://img.shields.io/github/release/zinja-coder/jadx-ai-mcp.svg)
 ![Java 11+](https://img.shields.io/badge/Java-11%2B-blue)
-![Python 3.10+](https://img.shields.io/badge/python-3%2E10%2B-blue)
+![Python 3.13+](https://img.shields.io/badge/python-3%2E10%2B-blue)
 [![License](http://img.shields.io/:license-apache-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 
 #### ⭐ Contributors
@@ -497,3 +497,7 @@ Use responsibly. Respect intellectual property. Follow ethical hacking practices
 ---
 
 Built with ❤️ for the reverse engineering and AI communities.
+
+### Installed command
+
+Python 3.13+ is required. Install with `uv tool install .`, then run `jadx_mcp_server --help` from any directory. The wheel includes the `src.server` and tool packages; a source checkout is not required at runtime.
