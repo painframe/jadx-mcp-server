@@ -86,3 +86,10 @@ Each feature is a separate stacked branch. Java counterparts are in painframe/ja
 - Adaptation: open_apk(path, replace=False) POSTs absolute backend-host paths; get_project_operation polls loading/ready/failed rather than treating scheduling as successful loading. Preserve backend unsaved-project safeguards.
 - Validation: 34 unittest cases, actual MCP/HTTP scheduling+poll state and default replace=False checks; invalid paths rejected; changed-file Ruff/Bandit clean.
 - Limits: GUI loading, cache invalidation and unsaved-state correctness require paired Java execution.
+
+## 14 search-coalescing
+
+- Donor: xjoker/jadx-ai-mcp @ 30337f6f072aa360e9099c99e99fb330d44e8986.
+- Adaptation: backend-owned shared search execution/result reuse; expose bounded exclude_packages CSV and require explicit acknowledgment when used. Carry partial, timed_out, search_id and warnings through existing pagination/progress. No duplicated Python result cache.
+- Validation: 36 unittest cases, partial-result and exclusion forwarding; changed-file Ruff/Bandit clean.
+- Limits: Java owns coalescing cancellation and finite result storage; partial results explicitly remain partial.

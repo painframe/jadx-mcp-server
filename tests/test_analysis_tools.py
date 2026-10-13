@@ -83,3 +83,13 @@ class AnalysisToolsTests(unittest.IsolatedAsyncioTestCase):
                 result = await client.call_tool('get_method_by_name', {'class_name': 'example.Class', 'method_name': 'run'})
         self.assertEqual(result.data['candidates'], payload['candidates'])
 
+
+    async def test_search_partial_results_and_exclusions_survive(self):
+        payload = {'classes': ['example.A'], 'partial': True, 'timed_out': True,
+                   'search_id': 'shared-1', 'warnings': ['deadline reached'], 'exclude_packages': 'android,java'}
+        with patch.object(search_tools, '_get_from_jadx_search', AsyncMock(return_value=payload)) as fetch:
+            result = await search_tools.search_classes_by_keyword('token', exclude_packages='android,java')
+        self.assertTrue(result['partial'])
+        self.assertEqual(result['search_id'], 'shared-1')
+        self.assertEqual(result['warnings'], ['deadline reached'])
+        self.assertEqual(fetch.await_args.args[1]['exclude_packages'], 'android,java')
