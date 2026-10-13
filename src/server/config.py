@@ -10,10 +10,10 @@ License: See LICENSE file
 """
 
 import logging
-import httpx
-import json
 import sys
-from typing import Union, Dict, Any
+from typing import Any
+
+import httpx
 
 # Default Configuration
 JADX_HOST = "127.0.0.1"
@@ -23,6 +23,13 @@ JADX_HTTP_BASE = f"http://{JADX_HOST}:{JADX_PORT}"
 # HTTP read timeouts (seconds) for plugin communication
 JADX_DEFAULT_TIMEOUT = 60.0
 JADX_SEARCH_TIMEOUT = 3600.0
+MUTATING_ENDPOINTS = frozenset({"rename-class", "rename-method", "rename-field",
+    "rename-package", "rename-variable", "add-comment", "cache-clear", "open-apk"})
+
+
+def is_mutation(method: str, endpoint: str) -> bool:
+    return method != "GET" or endpoint.strip("/") in MUTATING_ENDPOINTS
+
 
 # Logging Setup
 logger = logging.getLogger("jadx-mcp-server")
@@ -70,129 +77,86 @@ def set_jadx_port(port: int):
     _rebuild_jadx_http_base()
 
 
-def health_ping() -> Union[str, Dict[str, Any]]:
-    """
-    Checks if the JADX Java plugin is reachable.
+def error_response(message: str, code: str = "invalid_response", *, retryable: bool = False,
+                   endpoint: str | None = None, status: int | None = None) -> dict:
+    result = {"error": message, "code": code, "retryable": retryable, "source": "bridge"}
+    if endpoint is not None:
+        result["endpoint"] = endpoint
+    if status is not None:
+        result["status"] = status
+    return result
 
-    Returns:
-        Union[str, Dict[str, Any]]: Success message or error dictionary
 
-    Note:
-        Performs synchronous HTTP health check with 60-second timeout
-    """
+def _decode_response(response: httpx.Response, endpoint: str):
+    try:
+        payload = response.json()
+    except ValueError:
+        payload = None
+    if response.is_error:
+        # Never echo arbitrary error bodies: they may contain credentials or HTML.
+        if isinstance(payload, dict) and isinstance(payload.get("error"), str):
+            message = "".join(c if c.isprintable() else " " for c in payload["error"][:512])
+            result = error_response(message, endpoint=endpoint, status=response.status_code)
+            result["code"] = payload.get("code", "http_error") if isinstance(payload.get("code", "http_error"), str) else "http_error"
+            result["source"] = "jadx"
+            result["retryable"] = payload.get("retryable") is True
+            return result
+        return error_response(f"HTTP error {response.status_code} from JADX plugin", "http_error",
+                              endpoint=endpoint, status=response.status_code,
+                              retryable=response.status_code >= 500)
+    if payload is None:
+        if response.headers.get("content-type", "").startswith("application/json"):
+            return error_response("Expected a JSON object or list", endpoint=endpoint)
+        return {"response": response.text}
+    if isinstance(payload, (dict, list)):
+        return payload
+    return error_response("Expected a JSON object or list", endpoint=endpoint)
+
+
+def health_ping() -> str | dict[str, Any]:
     try:
         with httpx.Client(trust_env=False) as client:
-            resp = client.get(f"{JADX_HTTP_BASE}/health", timeout=60)
-            resp.raise_for_status()
-            return resp.text
-    except Exception as e:
-        logger.error(f"Health check failed: {e}")
-        return {"error": str(e)}
+            response = client.get(f"{JADX_HTTP_BASE}/health", timeout=JADX_DEFAULT_TIMEOUT)
+            if response.is_success:
+                return response.text
+            return _decode_response(response, "health")
+    except httpx.HTTPError:
+        return error_response("JADX health check failed", "unavailable", retryable=True,
+                              endpoint="health")
 
 
-async def get_from_jadx(
-    endpoint: str,
-    params: Dict[str, Any] = None,
-    timeout: float = JADX_DEFAULT_TIMEOUT,
-) -> Union[str, Dict[str, Any]]:
-    """
-    Generic async helper to request data from the JADX plugin.
-
-    Args:
-        endpoint: API endpoint path (e.g., "class-source", "manifest")
-        params: Query parameters dictionary for the request
-
-    Returns:
-        Union[str, Dict[str, Any]]: Parsed JSON response or error dictionary
-
-    Raises:
-        Returns error dict on HTTP failures or connection issues
-
-    Note:
-        Automatically handles JSON parsing with fallback to text response
-    """
-    params = params or {}
+async def _request_jadx(method: str, endpoint: str, params=None,
+                        timeout: float = JADX_DEFAULT_TIMEOUT, json_body=None):
     url = f"{JADX_HTTP_BASE}/{endpoint.lstrip('/')}"
     try:
         async with httpx.AsyncClient(trust_env=False) as client:
-            resp = await client.get(url, params=params, timeout=timeout)
-            resp.raise_for_status()
-
-            # Try to parse JSON, fallback to text if not valid JSON
-            try:
-                return resp.json()
-            except json.JSONDecodeError:
-                return {"response": resp.text}
-
-    except httpx.HTTPStatusError as e:
-        error_msg = f"HTTP error {e.response.status_code}: {e.response.text}"
-        logger.error(error_msg)
-        return {"error": error_msg}
-
+            response = await client.request(method, url, params=params or {},
+                                            json=json_body, timeout=timeout)
+        result = _decode_response(response, endpoint)
+        if isinstance(result, dict) and result.get("error") and is_mutation(method, endpoint):
+            result["retryable"] = False
+        return result
     except httpx.TimeoutException:
-        error_msg = (
-            f"Request to JADX plugin timed out after {timeout}s for endpoint '{endpoint}'. "
-            "The operation may still be running in JADX-GUI. "
-            "For large APKs, code-level searches can take several minutes."
-        )
-        logger.error(error_msg)
-        return {"error": error_msg}
-
-    except httpx.ConnectError:
-        error_msg = (
-            f"Cannot connect to JADX plugin at {JADX_HTTP_BASE}. "
-            "Ensure JADX-GUI is running and the AI MCP plugin is active."
-        )
-        logger.error(error_msg)
-        return {"error": error_msg}
-
-    except Exception as e:
-        error_msg = f"Unexpected error communicating with JADX plugin: {type(e).__name__}: {str(e)}"
-        logger.error(error_msg)
-        return {"error": error_msg}
+        return error_response(
+            f"Request timed out after {timeout}s; operation may still be running in JADX",
+            "timeout", retryable=not is_mutation(method, endpoint), endpoint=endpoint)
+    except httpx.HTTPError:
+        return error_response("Cannot communicate with JADX plugin", "unavailable",
+                              retryable=not is_mutation(method, endpoint), endpoint=endpoint)
 
 
-async def post_to_jadx(endpoint: str, params: Dict[str, Any] = None) -> Union[str, Dict[str, Any]]:
-    """
-    Generic async helper to POST to the JADX plugin (for mutating operations like cache-clear).
-    """
-    params = params or {}
-    url = f"{JADX_HTTP_BASE}/{endpoint.lstrip('/')}"
-    try:
-        async with httpx.AsyncClient(trust_env=False) as client:
-            resp = await client.post(url, params=params, timeout=30)
-            resp.raise_for_status()
-            try:
-                return resp.json()
-            except json.JSONDecodeError:
-                return {"response": resp.text}
-    except httpx.TimeoutException:
-        return {
-            "error": (
-                f"POST to JADX plugin timed out after 30s for endpoint '{endpoint}'. "
-                f"Target: {JADX_HTTP_BASE}"
-            )
-        }
-    except httpx.ConnectError:
-        return {"error": f"Cannot connect to JADX plugin at {JADX_HTTP_BASE}. Ensure JADX-GUI is running."}
-    except Exception as e:
-        return {"error": f"POST to {endpoint} failed: {type(e).__name__}: {str(e)}"}
+async def get_from_jadx(endpoint: str, params: dict[str, Any] | None = None,
+                        timeout: float = JADX_DEFAULT_TIMEOUT):
+    return await _request_jadx("GET", endpoint, params, timeout)
 
 
-async def get_search_progress() -> Dict[str, Any]:
-    """
-    Poll the JADX plugin for current search progress.
+async def post_to_jadx(endpoint: str, params: dict[str, Any] | None = None,
+                       timeout: float = 30, json_body=None):
+    return await _request_jadx("POST", endpoint, params, timeout, json_body)
 
-    Returns:
-        Dict with keys: state, scanned, total, matches, search_id, operation_type,
-        elapsed_ms.  When state is "failed", also includes "error".
-        Returns {"state": "unknown"} on connection failure.
-    """
-    url = f"{JADX_HTTP_BASE}/search-progress"
-    try:
-        async with httpx.AsyncClient(trust_env=False) as client:
-            resp = await client.get(url, timeout=5)
-            resp.raise_for_status()
-            return resp.json()
-    except Exception:
-        return {"state": "unknown"}
+
+async def get_search_progress() -> dict[str, Any]:
+    result = await get_from_jadx("search-progress", timeout=5)
+    if not isinstance(result, dict) or result.get("error"):
+        return {"state": "unknown", **(result if isinstance(result, dict) else {})}
+    return result
