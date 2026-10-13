@@ -32,3 +32,13 @@ class BatchTests(unittest.IsolatedAsyncioTestCase):
     async def test_invalid_batch_rejected_before_transport(self):
         for items in ([], [{'class_name': 'A'}] * 51, [{'class_name': None}], [{'class_name': 'A', 'url': 'external'}]):
             self.assertEqual((await batch_tools.batch_analysis('class-source', items))['code'], 'invalid_request')
+
+    async def test_malformed_batch_results_fail_at_http_boundary(self):
+        malformed = [[], ['serialized JSON'], [{'index': 0, 'ok': True, 'data': '{}'}],
+            [{'index': 0, 'ok': 'true', 'data': {}}], [{'index': 1, 'ok': True, 'data': {}}]]
+        real_client = httpx.AsyncClient
+        for results in malformed:
+            with patch.object(config.httpx, 'AsyncClient', side_effect=lambda results=results, **kw: real_client(
+                    transport=httpx.MockTransport(lambda request: httpx.Response(200, json={'results': results})), **kw)):
+                result = await batch_tools.batch_analysis('class-source', [{'class_name': 'A'}])
+            self.assertEqual(result['code'], 'invalid_response')

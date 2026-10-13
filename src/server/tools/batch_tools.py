@@ -36,4 +36,17 @@ async def batch_analysis(operation: BatchOperation, items: list[dict], max_bytes
         return result
     if not isinstance(result, dict) or not isinstance(result.get('results'), list):
         return error_response('Invalid batch response from plugin', 'invalid_response')
+    results = result['results']
+    if len(results) != len(items):
+        return error_response('Incomplete batch response from plugin', 'invalid_response')
+    seen = set()
+    for item in results:
+        if (not isinstance(item, dict) or type(item.get('index')) is not int
+                or not 0 <= item['index'] < len(items) or item['index'] in seen
+                or type(item.get('ok')) is not bool):
+            return error_response('Invalid batch item envelope', 'invalid_response')
+        seen.add(item['index'])
+        if (item['ok'] and not isinstance(item.get('data'), (dict, list))) or (
+                not item['ok'] and not isinstance(item.get('error'), str)):
+            return error_response('Invalid batch item payload', 'invalid_response')
     return result
