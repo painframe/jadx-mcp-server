@@ -125,6 +125,7 @@ async def search_classes_by_keyword(
     ctx: Context | None = None,
     regex: bool = False,
     case_sensitive: bool = False,
+    exclude_packages: str = "",
 ) -> dict:
     """Search for classes containing a specific keyword with flexible filtering options.
 
@@ -169,7 +170,7 @@ async def search_classes_by_keyword(
     report_progress = ctx.report_progress if ctx else None
     return await search_tools.search_classes_by_keyword(
         search_term, package, search_in, offset, count, report_progress=report_progress,
-        regex=regex, case_sensitive=case_sensitive,
+        regex=regex, case_sensitive=case_sensitive, exclude_packages=exclude_packages,
     )
 
 

@@ -240,6 +240,7 @@ async def search_classes_by_keyword(
     report_progress=None,
     regex: bool = False,
     case_sensitive: bool = False,
+    exclude_packages: str = "",
 ) -> dict:
     """
     Search for classes containing a specific keyword with flexible filtering options.
@@ -279,6 +280,9 @@ async def search_classes_by_keyword(
     Returns:
         dict: Paginated list of classes containing the search term, with metadata about matches
     """
+    if len(exclude_packages) > 4096:
+        return error_response("Package exclusion list exceeds 4096 characters", "invalid_request")
+
     async def fetch_with_options(endpoint, params):
         response = await _get_from_jadx_search(endpoint, params)
         if (regex or case_sensitive) and (
@@ -287,6 +291,9 @@ async def search_classes_by_keyword(
 
             return error_response("Plugin does not support the requested search options",
                                   "unsupported_capability", endpoint=endpoint)
+        if exclude_packages and (not isinstance(response, dict) or (
+                not response.get("error") and response.get("exclude_packages") != exclude_packages)):
+            return error_response("Plugin does not support package exclusions", "unsupported_capability")
         return response
 
     # Fire search request and progress poller concurrently
@@ -302,6 +309,7 @@ async def search_classes_by_keyword(
                 "search_in": search_in,
                 "regex": str(regex).lower(),
                 "case_sensitive": str(case_sensitive).lower(),
+                "exclude_packages": exclude_packages,
             },
             data_extractor=lambda parsed: parsed.get("classes", []),
             fetch_function=fetch_with_options,
