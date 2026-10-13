@@ -114,3 +114,10 @@ Each feature is a separate stacked branch. Java counterparts are in painframe/ja
 - Adaptation: full HTTP(S) backend URL (--jadx-url/JADX_API_URL), token from JADX_API_TOKEN or --jadx-token-file/JADX_API_TOKEN_FILE. File is reread per request for rotation; unreadable/invalid token fails closed. GET, POST, health and progress use the same bearer header. Tokens are not command-line values or logged; health logs only outcome. Proxy isolation remains.
 - Validation: 44 unittest cases, all transport modes receive auth, file rotation/rejection, full URL parsing and prefix retention; changed-file Ruff/Bandit clean.
 - Limits: this authenticates bridge-to-plugin traffic; MCP client identities and HTTP access policy are feature19. Use TLS termination for remote HTTP.
+
+## 18 multi-instance-supervisor
+
+- Donor: vv19ca0/jadx-mcp-server @ 910ff08e8dfe6832f01cc65767c3c390246a0e35.
+- Adaptation: schema-visible optional instance on all current tools, ContextVar routing, canonical local-admin registry, distinct backend credential references, bounded opt-in loopback discovery, validated plugin health identity. Existing comments/debugging tools retained. No MCP URL registration.
+- Validation: 47 unittest cases; actual concurrent FastMCP/HTTP calls select independent backends, schema checks cover every tool, alias collision/load atomicity and false health positives tested; changed-file Ruff/Bandit clean.
+- Limits: administrator files are trusted; multi-user visibility/authorization arrives in feature19. Registry discovery does not bypass plugin authentication.

@@ -10,6 +10,7 @@ See the file 'LICENSE' for copying permission
 """
 
 import argparse
+import asyncio
 import logging
 import os
 import sys
@@ -40,7 +41,8 @@ for _var in _PROXY_VARS:
 from fastmcp import Context, FastMCP
 
 from src.banner import jadx_mcp_server_banner
-from src.server import config
+from src.server import config, instances
+from src.server.routing import instance_tool
 
 # Initialize MCP Server
 mcp = FastMCP("JADX-AI-MCP Plugin Reverse Engineering Server")
@@ -69,31 +71,31 @@ from src.server.tools import (
 
 
 # CORRECT REGISTRATION PATTERN for FastMCP
-@mcp.tool()
+@instance_tool(mcp)
 async def fetch_current_class() -> dict:
     """Fetch the currently selected class and its code from the JADX-GUI plugin."""
     return await class_tools.fetch_current_class()
 
 
-@mcp.tool()
+@instance_tool(mcp)
 async def get_selected_text() -> dict:
     """Returns the currently selected text in the decompiled code view."""
     return await class_tools.get_selected_text()
 
 
-@mcp.tool()
+@instance_tool(mcp)
 async def get_method_by_name(class_name: str, method_name: str, method_signature: str | None = None) -> dict:
     """Fetch a method; method_signature accepts '(I)V' or 'run(int):void'."""
     return await search_tools.get_method_by_name(class_name, method_name, method_signature)
 
 
-@mcp.tool()
+@instance_tool(mcp)
 async def get_all_classes(offset: int = 0, count: int = 0) -> dict:
     """Returns a list of all classes in the project with pagination support."""
     return await class_tools.get_all_classes(offset, count)
 
 
-@mcp.tool()
+@instance_tool(mcp)
 async def get_class_source(class_name: str, with_line_numbers: bool = False, max_bytes: int | None = None, cursor: str | None = None) -> dict:
     """Fetch the Java source of a specific class.
 
@@ -103,20 +105,20 @@ async def get_class_source(class_name: str, with_line_numbers: bool = False, max
     return await class_tools.get_class_source(class_name, with_line_numbers, max_bytes, cursor)
 
 
-@mcp.tool()
+@instance_tool(mcp)
 async def search_method_by_name(method_name: str, ctx: Context | None = None) -> dict:
     """Search for a method name across all classes."""
     report_progress = ctx.report_progress if ctx else None
     return await search_tools.search_method_by_name(method_name, report_progress=report_progress)
 
 
-@mcp.tool()
+@instance_tool(mcp)
 async def get_methods_of_class(class_name: str) -> dict:
     """List all method names in a class."""
     return await class_tools.get_methods_of_class(class_name)
 
 
-@mcp.tool()
+@instance_tool(mcp)
 async def search_classes_by_keyword(
     search_term: str,
     package: str = "",
@@ -175,92 +177,92 @@ async def search_classes_by_keyword(
     )
 
 
-@mcp.tool()
+@instance_tool(mcp)
 async def get_fields_of_class(class_name: str) -> dict:
     """List all field names in a class."""
     return await class_tools.get_fields_of_class(class_name)
 
 
-@mcp.tool()
+@instance_tool(mcp)
 async def get_smali_of_class(class_name: str, max_bytes: int | None = None, cursor: str | None = None) -> dict:
     """Fetch the smali representation of a class."""
     return await class_tools.get_smali_of_class(class_name, max_bytes, cursor)
 
 
-@mcp.tool()
+@instance_tool(mcp)
 async def get_manifest_component(component_type: str, only_exported: bool = False) -> dict:
     """Retrieve specified component data from AndroidManifest.xml, support filter exported components.
     Support standard Android components: activity, provider, service, receiver."""
     return await resource_tools.get_manifest_component(component_type, only_exported)
 
 
-@mcp.tool()
+@instance_tool(mcp)
 async def get_android_manifest() -> dict:
     """Retrieve and return the AndroidManifest.xml content."""
     return await resource_tools.get_android_manifest()
 
 
-@mcp.tool()
+@instance_tool(mcp)
 async def get_strings(offset: int = 0, count: int = 0) -> dict:
     """Retrieve contents of strings.xml files."""
     return await resource_tools.get_strings(offset, count)
 
 
-@mcp.tool()
+@instance_tool(mcp)
 async def get_all_resource_file_names(offset: int = 0, count: int = 0) -> dict:
     """Retrieve all resource files names."""
     return await resource_tools.get_all_resource_file_names(offset, count)
 
 
-@mcp.tool()
+@instance_tool(mcp)
 async def get_resource_file(resource_name: str, max_bytes: int | None = None, cursor: str | None = None) -> dict:
     """Retrieve resource file content."""
     return await resource_tools.get_resource_file(resource_name, max_bytes, cursor)
 
 
-@mcp.tool()
+@instance_tool(mcp)
 async def get_main_application_classes_names() -> dict:
     """Fetch main application classes' names from Manifest package."""
     return await class_tools.get_main_application_classes_names()
 
 
-@mcp.tool()
+@instance_tool(mcp)
 async def get_main_application_classes_code(offset: int = 0, count: int = 0) -> dict:
     """Fetch main application classes' code with pagination."""
     return await class_tools.get_main_application_classes_code(offset, count)
 
 
-@mcp.tool()
+@instance_tool(mcp)
 async def get_main_activity_class() -> dict:
     """Fetch the main activity class from AndroidManifest.xml."""
     return await class_tools.get_main_activity_class()
 
 
-@mcp.tool()
+@instance_tool(mcp)
 async def get_package_tree() -> dict:
     """Get all packages in the APK sorted by class count. Shows total_classes, total_packages, and per-package name, class_count, is_likely_library. Use this first to understand the APK structure before searching."""
     return await class_tools.get_package_tree()
 
 
-@mcp.tool()
+@instance_tool(mcp)
 async def get_cache_stats() -> dict:
     """Get decompilation cache statistics: hits, misses, hit_rate, cached_classes, compressed_mb, compression_ratio."""
     return await class_tools.get_cache_stats()
 
 
-@mcp.tool()
+@instance_tool(mcp)
 async def clear_cache() -> dict:
     """Clear the decompilation source cache and reset counters. Use when switching APKs or to free memory."""
     return await class_tools.clear_cache()
 
 
-@mcp.tool()
+@instance_tool(mcp)
 async def rename_class(class_name: str, new_name: str) -> dict:
     """Renames a specific class."""
     return await refactor_tools.rename_class(class_name, new_name)
 
 
-@mcp.tool()
+@instance_tool(mcp)
 async def rename_method(
     method_name: str,
     new_name: str,
@@ -273,25 +275,25 @@ async def rename_method(
     )
 
 
-@mcp.tool()
+@instance_tool(mcp)
 async def rename_field(class_name: str, field_name: str, new_name: str) -> dict:
     """Renames a specific field."""
     return await refactor_tools.rename_field(class_name, field_name, new_name)
 
 
-@mcp.tool()
+@instance_tool(mcp)
 async def rename_package(old_package_name: str, new_package_name: str) -> dict:
     """Renames a package and all its classes."""
     return await refactor_tools.rename_package(old_package_name, new_package_name)
 
 
-@mcp.tool()
+@instance_tool(mcp)
 async def rename_variable(class_name: str, method_name: str, variable_name: str, new_name: str, reg: str | None = None, ssa: str | None = None) -> dict:
     """Renames a specific variable in a method."""
     return await refactor_tools.rename_variable(class_name, method_name, variable_name, new_name, reg, ssa)
 
 
-@mcp.tool()
+@instance_tool(mcp)
 async def add_comment(
     class_name: str,
     comment: str,
@@ -333,7 +335,7 @@ async def add_comment(
     )
 
 
-@mcp.tool()
+@instance_tool(mcp)
 async def list_comments(class_name: str = "") -> dict:
     """List the comments already stored in the project, optionally filtered to one class.
 
@@ -343,31 +345,31 @@ async def list_comments(class_name: str = "") -> dict:
     return await comment_tools.list_comments(class_name)
 
 
-@mcp.tool()
+@instance_tool(mcp)
 async def debug_get_stack_frames() -> dict:
     """Get current stack frames (call stack)."""
     return await debug_tools.debug_get_stack_frames()
 
 
-@mcp.tool()
+@instance_tool(mcp)
 async def debug_get_threads() -> dict:
     """Get all threads in the debugged process."""
     return await debug_tools.debug_get_threads()
 
 
-@mcp.tool()
+@instance_tool(mcp)
 async def debug_get_variables() -> dict:
     """Get current variables when process is suspended."""
     return await debug_tools.debug_get_variables()
 
 
-@mcp.tool()
+@instance_tool(mcp)
 async def get_xrefs_to_class(class_name: str, offset: int = 0, count: int = 20) -> dict:
     """Find all references to a class."""
     return await xrefs_tools.get_xrefs_to_class(class_name, offset, count)
 
 
-@mcp.tool()
+@instance_tool(mcp)
 async def get_xrefs_to_method(
     class_name: str, method_name: str, offset: int = 0, count: int = 20
 ) -> dict:
@@ -377,7 +379,7 @@ async def get_xrefs_to_method(
     )
 
 
-@mcp.tool()
+@instance_tool(mcp)
 async def get_xrefs_to_field(
     class_name: str, field_name: str, offset: int = 0, count: int = 20
 ) -> dict:
@@ -387,32 +389,32 @@ async def get_xrefs_to_field(
     )
 
 
-@mcp.tool()
+@instance_tool(mcp)
 async def get_class_info(class_name: str) -> dict:
     """Read access flags, fields, methods and overload metadata for a class."""
     return await class_tools.get_class_info(class_name)
 
 
-@mcp.tool()
+@instance_tool(mcp)
 async def get_method_signature(class_name: str, method_name: str,
                                method_signature: str | None = None) -> dict:
     """Read parameter/return descriptors and Frida-compatible types for method overloads."""
     return await class_tools.get_method_signature(class_name, method_name, method_signature)
 
 
-@mcp.tool()
+@instance_tool(mcp)
 async def search_native_methods(package: str = "", offset: int = 0, count: int = 20) -> dict:
     """Find native method declarations with package filtering and pagination."""
     return await search_tools.search_native_methods(package, offset, count)
 
 
-@mcp.tool()
+@instance_tool(mcp)
 async def batch_analysis(operation: batch_tools.BatchOperation, items: list[dict], max_bytes: int = 65536) -> dict:
     """Read up to 50 class/method/xref targets with per-item outcomes and bounded content."""
     return await batch_tools.batch_analysis(operation, items, max_bytes)
 
 
-@mcp.tool()
+@instance_tool(mcp)
 async def open_apk(path: str, replace: bool = False) -> dict:
     """Open an absolute APK/DEX/JAR path on the backend host; poll the returned operation_id.
 
@@ -421,19 +423,31 @@ async def open_apk(path: str, replace: bool = False) -> dict:
     return await project_tools.open_apk(path, replace)
 
 
-@mcp.tool()
+@instance_tool(mcp)
 async def get_project_operation(operation_id: str) -> dict:
     """Poll an APK load until ready or failed before issuing analysis requests."""
     return await project_tools.get_project_operation(operation_id)
 
 
-@mcp.tool()
+@instance_tool(mcp)
 async def get_jvm_info(section: jvm_tools.JvmSection) -> dict:
     """Inspect JAR manifest, SPI services, entry points, structural dependencies, properties or packages.
 
     Dependency summaries describe references visible in bytecode, not resolved runtime dependencies.
     """
     return await jvm_tools.get_jvm_info(section)
+
+
+@mcp.tool()
+async def list_instances() -> dict:
+    """List administrator-configured canonical instance IDs and discovered project names."""
+    return {"instances": instances.public_instances()}
+
+
+@mcp.tool()
+async def refresh_instances() -> dict:
+    """Refresh identity/capabilities of configured plugin instances without registering URLs."""
+    return {"instances": await instances.refresh_instances()}
 
 
 def main():
@@ -469,6 +483,8 @@ def main():
     )
     parser.add_argument("--jadx-url", default=os.environ.get("JADX_API_URL"), help="Full HTTP(S) plugin URL")
     parser.add_argument("--jadx-token-file", help="File containing backend bearer token; reloaded each request")
+    parser.add_argument("--instances-file", help="Administrator JSON registry of backend IDs, URLs and credential references")
+    parser.add_argument("--discover", action="store_true", help="Discover identified plugins on loopback ports 8650..8665")
     args = parser.parse_args()
 
     # Configure
@@ -482,6 +498,13 @@ def main():
     _, token_error = config.backend_headers()
     if token_error:
         parser.error(token_error["error"])
+
+    if args.instances_file:
+        registry_error = instances.load_registry(args.instances_file)
+        if registry_error:
+            parser.error(registry_error)
+    if args.discover:
+        asyncio.run(instances.discover_local())
 
     # Security warning for non-localhost bind address
     if args.host not in ("127.0.0.1", "localhost", "::1"):

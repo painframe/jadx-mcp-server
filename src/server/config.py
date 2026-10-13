@@ -22,6 +22,7 @@ from urllib.parse import urlsplit, urlunsplit
 
 import httpx
 
+from src.server import instances
 from src.server.scheduling import gate_for
 
 # Default Configuration
@@ -100,8 +101,11 @@ def set_jadx_url(url: str) -> dict | None:
 
 
 def backend_headers() -> tuple[dict, dict | None]:
-    path = JADX_TOKEN_FILE or os.environ.get("JADX_API_TOKEN_FILE")
-    token = os.environ.get("JADX_API_TOKEN", "")
+    selected = instances.current()
+    path = selected.get("token_file") if selected else JADX_TOKEN_FILE or os.environ.get("JADX_API_TOKEN_FILE")
+    token = os.environ.get(selected.get("token_env", ""), "") if selected else os.environ.get("JADX_API_TOKEN", "")
+    if selected and selected.get("token_env") and not token:
+        return {}, error_response("Backend token environment variable is empty", "configuration_error")
     if path:
         try:
             with Path(path).open(encoding="utf-8") as source:
@@ -183,22 +187,24 @@ def _decode_response(response: httpx.Response, endpoint: str):
 
 
 def health_ping() -> str | dict[str, Any]:
-    base = JADX_HTTP_BASE
+    selected = instances.current()
+    base = selected["url"] if selected else JADX_HTTP_BASE
+    identity = selected["id"] if selected else base
     headers, auth_error = backend_headers()
     if auth_error:
         return auth_error
-    if _cooling_down(base):
+    if _cooling_down(identity):
         return error_response("JADX connection is cooling down", "unavailable", retryable=True,
                               endpoint="health")
     try:
         with httpx.Client(trust_env=False) as client:
             response = client.get(f"{base}/health", headers=headers, timeout=_http_timeout(JADX_CONNECT_TIMEOUT))
-            _failures.pop(base, None)
+            _failures.pop(identity, None)
             if response.is_success:
                 return response.text
             return _decode_response(response, "health")
     except httpx.ConnectError:
-        _record_failure(base)
+        _record_failure(identity)
         return error_response("JADX health check failed", "unavailable", retryable=True,
                               endpoint="health")
     except httpx.HTTPError:
@@ -210,17 +216,19 @@ async def _request_jadx(method: str, endpoint: str, params=None,
                         timeout: float = JADX_DEFAULT_TIMEOUT, json_body=None):
     if isinstance(timeout, bool) or not isinstance(timeout, (int, float)) or not math.isfinite(timeout) or timeout <= 0:
         return error_response("timeout must be a positive finite number", "invalid_request", endpoint=endpoint)
-    base = JADX_HTTP_BASE
+    selected = instances.current()
+    base = selected["url"] if selected else JADX_HTTP_BASE
+    identity = selected["id"] if selected else base
     headers, auth_error = backend_headers()
     if auth_error:
         return auth_error
-    if _cooling_down(base):
+    if _cooling_down(identity):
         return error_response("JADX connection is cooling down", "unavailable", retryable=not is_mutation(method, endpoint), endpoint=endpoint)
     url = f"{base}/{endpoint.lstrip('/')}"
     try:
         async with asyncio.timeout(timeout + JADX_CONNECT_TIMEOUT):
             control = endpoint.strip("/") in {"health", "search-progress", "project-operation", "runtime-diagnostics"}
-            gate = gate_for(base + "#control" if control else base)
+            gate = gate_for(identity + "#control" if control else identity)
             write = is_mutation(method, endpoint)
             if gate is None or not await gate.acquire(write):
                 return error_response("Backend request queue is full", "busy", retryable=True, endpoint=endpoint)
@@ -230,7 +238,7 @@ async def _request_jadx(method: str, endpoint: str, params=None,
                                                     json=json_body, headers=headers, timeout=_http_timeout(timeout))
             finally:
                 await gate.release(write)
-        _failures.pop(base, None)
+        _failures.pop(identity, None)
         result = _decode_response(response, endpoint)
         if isinstance(result, dict) and result.get("error") and is_mutation(method, endpoint):
             result["retryable"] = False
@@ -240,7 +248,7 @@ async def _request_jadx(method: str, endpoint: str, params=None,
             f"Request timed out after {timeout}s; operation may still be running in JADX",
             "timeout", retryable=not is_mutation(method, endpoint), endpoint=endpoint)
     except httpx.ConnectError:
-        _record_failure(base)
+        _record_failure(identity)
         return error_response("Cannot connect to JADX plugin", "unavailable",
                               retryable=not is_mutation(method, endpoint), endpoint=endpoint)
     except httpx.HTTPError:
