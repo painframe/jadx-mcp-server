@@ -47,3 +47,15 @@ class AnalysisToolsTests(unittest.IsolatedAsyncioTestCase):
                     'method_name': 'run', 'method_signature': '(I)V'})
         self.assertEqual(fetch.await_args.args, ('method-signature', {
             'class_name': 'example.Class', 'method_name': 'run', 'method_signature': '(I)V'}))
+
+    async def test_native_search_validates_and_forwards_pagination(self):
+        fetch = AsyncMock(return_value={'methods': [{'name': 'nativeRun'}]})
+        with patch.object(search_tools, 'get_from_jadx', fetch):
+            result = await search_tools.search_native_methods('example', 2, 3)
+            self.assertEqual(result['items'], [{'name': 'nativeRun'}])
+            self.assertEqual(fetch.await_args.args, ('search-native-methods',
+                {'package': 'example', 'offset': 2, 'limit': 3}))
+            async with Client(jadx_mcp_server.mcp) as client:
+                result = await client.call_tool('search_native_methods', {'offset': -1})
+            self.assertFalse(result.is_error)
+            self.assertEqual(fetch.await_count, 1)

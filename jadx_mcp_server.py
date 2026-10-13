@@ -396,6 +396,12 @@ async def get_method_signature(class_name: str, method_name: str,
     return await class_tools.get_method_signature(class_name, method_name, method_signature)
 
 
+@mcp.tool()
+async def search_native_methods(package: str = "", offset: int = 0, count: int = 20) -> dict:
+    """Find native method declarations with package filtering and pagination."""
+    return await search_tools.search_native_methods(package, offset, count)
+
+
 def main():
     parser = argparse.ArgumentParser("MCP Server for Jadx")
     parser.add_argument(
