@@ -142,3 +142,10 @@ Each feature is a separate stacked branch. Java counterparts are in painframe/ja
 - Adaptation: get_backend_capabilities exposes authenticated mode/route capabilities. Known registry capabilities reject unsupported GUI operations before dispatch. For new routes returning unstructured404, health negotiation distinguishes unavailable feature from missing entity in a supported route. No blanket404 conversion.
 - Validation: 59 unittest cases; actual MCP/HTTP headless capability read, unsupported GUI action and supported-route404 distinction; changed-file Ruff/Bandit clean.
 - Limits: actual headless startup/decompilation belongs to the Java PR; capability metadata refresh is explicit through refresh_instances/get_backend_capabilities.
+
+## 22 container-images
+
+- Donor: luminovaa/jadx-mcp-server @ 082fba3d9f99699ba64a8dfd31ffe080425c59c9.
+- Adaptation: digest-pinned Python3.13 and uv0.9.3 multi-stage build, frozen lock, installed non-editable package, UID/GID10001, exec entrypoint. Docker --init provides signal forwarding/reaping without adding an unpinned apt dependency. Strict build-context allowlist excludes credentials, git and fixtures.
+- Validation: actual Docker build succeeded (image sha256:54bfd4387df9854fb7846bb425f26eebbeb418b10ccffc0721f7fcf3cc575fe1); image UID10001/import and real stdio MCP initialize/list/call/unavailable-backend response passed. Container tests opt in via JADX_TEST_CONTAINER_IMAGE; Ruff/Bandit clean.
+- Limits: no image publication; no production deployment, TLS proxy or headless-Java integration claimed by Python image smoke. Image runtime Python3.13.16; workstation tests Python3.13.15.

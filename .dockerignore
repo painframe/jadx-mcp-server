@@ -1,0 +1,11 @@
+*
+!Dockerfile
+!pyproject.toml
+!uv.lock
+!README.md
+!LICENSE
+!jadx_mcp_server.py
+!src/
+!src/**
+**/__pycache__
+**/*.pyc
