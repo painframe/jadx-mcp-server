@@ -35,7 +35,7 @@ Each feature is a separate stacked branch. Java counterparts are in painframe/ja
 - Donors: odell0111/jadx-ai-mcp @ 951d6d964ae194a45bd4735bd8839d455d0607ba (matching contract); ngkz/jadx-mcp-server @ 3878515e039fb088ef5f4bb45a49ef52fa318efb (regex parameter plumbing).
 - Adaptation: additive regex and case_sensitive flags default false; preserve the expression verbatim and use lowercase boolean query values. Actual FastMCP calls verify forwarding and defaults. Module-level registration imports replace duplicate unused function imports; rejected progress notifications are debug logged.
 - Validation: 19 unittest cases; Ruff/Bandit clean on all changed Python files; import exercised by MCP tests.
-- Limits: execution deadlines and pattern evaluation live in the paired Java PR; older plugins ignore flags and cannot provide these search semantics.
+- Limits: execution deadlines and pattern evaluation live in the paired Java PR; older plugins lacking the search_options acknowledgment return unsupported_capability for opt-in flags.
 
 ## 07 analysis-metadata
 
@@ -72,3 +72,10 @@ Each feature is a separate stacked branch. Java counterparts are in painframe/ja
 - New batch_analysis MCP tool accepts one of five analysis operations, 1..50 parameter objects, and bounded per-item content bytes. POST body is structured JSON; per-item success/error responses are preserved. Reject unknown parameters and invalid identifiers/pagination before dispatch.
 - Validation: 31 unittest cases, actual FastMCP to HTTP mock verifies POST JSON and mixed outcomes; oversized/malformed batch rejection; changed-file Ruff/Bandit clean.
 - Limits: total response may include fifty bounded contents plus metadata; Java owns execution and continuation.
+
+## 12 bounded-analysis-caches
+
+- Donor: xjoker/jadx-ai-mcp @ 30337f6f072aa360e9099c99e99fb330d44e8986.
+- Adaptation: retain backend-owned caches and existing MCP controls; expose bounded-cache policy and project-generation metadata without duplicating cached state in Python. Existing clear_cache remains POST and forwards invalidation results.
+- Validation: 32 unittest cases; real MCP-to-HTTP stats/clear test preserves metadata and checks HTTP mutation method. Changed-file Ruff/Bandit clean.
+- Limits: Python does not claim cache eviction/invalidation correctness; paired Java tests verify cache implementation. No new Python cache is introduced.
