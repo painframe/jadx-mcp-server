@@ -383,6 +383,19 @@ async def get_xrefs_to_field(
     )
 
 
+@mcp.tool()
+async def get_class_info(class_name: str) -> dict:
+    """Read access flags, fields, methods and overload metadata for a class."""
+    return await class_tools.get_class_info(class_name)
+
+
+@mcp.tool()
+async def get_method_signature(class_name: str, method_name: str,
+                               method_signature: str | None = None) -> dict:
+    """Read parameter/return descriptors and Frida-compatible types for method overloads."""
+    return await class_tools.get_method_signature(class_name, method_name, method_signature)
+
+
 def main():
     parser = argparse.ArgumentParser("MCP Server for Jadx")
     parser.add_argument(

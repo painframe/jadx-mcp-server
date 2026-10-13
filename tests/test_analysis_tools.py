@@ -36,3 +36,14 @@ class AnalysisToolsTests(unittest.IsolatedAsyncioTestCase):
         with patch.object(search_tools, '_get_from_jadx_search', AsyncMock(return_value=['wrong.Class'])):
             result = await search_tools.search_classes_by_keyword('.*', regex=True)
         self.assertEqual(result['code'], 'unsupported_capability')
+    async def test_metadata_tools_forward_overload_descriptor(self):
+        from src.server.tools import class_tools
+        fetch = AsyncMock(return_value={'methods': [{'descriptor': '(I)V'}]})
+        with patch.object(class_tools, 'get_from_jadx', fetch):
+            async with Client(jadx_mcp_server.mcp) as client:
+                await client.call_tool('get_class_info', {'class_name': 'example.Class'})
+                self.assertEqual(fetch.await_args.args, ('class-info', {'class_name': 'example.Class'}))
+                await client.call_tool('get_method_signature', {'class_name': 'example.Class',
+                    'method_name': 'run', 'method_signature': '(I)V'})
+        self.assertEqual(fetch.await_args.args, ('method-signature', {
+            'class_name': 'example.Class', 'method_name': 'run', 'method_signature': '(I)V'}))
