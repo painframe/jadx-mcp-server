@@ -14,8 +14,13 @@ License: See LICENSE file
 import asyncio
 import logging
 
-from src.server.config import get_from_jadx, get_search_progress, JADX_SEARCH_TIMEOUT
 from src.PaginationUtils import PaginationUtils
+from src.server.config import (
+    JADX_SEARCH_TIMEOUT,
+    error_response,
+    get_from_jadx,
+    get_search_progress,
+)
 
 logger = logging.getLogger("jadx-mcp-server.search")
 
@@ -91,8 +96,7 @@ async def _poll_progress(
                 if check_state == "running":
                     # plugin confirms it's still working => grant extension
                     new_deadline = current_deadline + original_budget
-                    if new_deadline > absolute_max_seconds:
-                        new_deadline = absolute_max_seconds
+                    new_deadline = min(new_deadline, absolute_max_seconds)
                     extensions_granted += 1
                     logger.info(
                         "Progress poller: search still running at %.0fs (%.0f%% of budget). "
@@ -107,7 +111,7 @@ async def _poll_progress(
                         if total > 0:
                             await report_progress(scanned, total)
                     except Exception:
-                        pass
+                        logger.debug("Client rejected progress notification", exc_info=True)
                     current_deadline = new_deadline
                 elif check_state in ("completed", "failed"):
                     # Search ended while we were checking, will be caught below
@@ -161,7 +165,7 @@ async def _poll_progress(
                     try:
                         await report_progress(scanned, total)
                     except Exception:
-                        pass  # Client may not support progress
+                        logger.debug("Client rejected progress notification", exc_info=True)
 
             elif seen_running and state in ("completed", "failed"):
                 # Current search finished — send final progress and stop
@@ -171,7 +175,7 @@ async def _poll_progress(
                     try:
                         await report_progress(scanned, total)
                     except Exception:
-                        pass
+                        logger.debug("Client rejected progress notification", exc_info=True)
                 break
             # If not seen_running yet: state might be "idle", "completed", or
             # "failed" from a PREVIOUS search — keep polling until the current
@@ -180,7 +184,7 @@ async def _poll_progress(
         pass
 
 
-async def get_method_by_name(class_name: str, method_name: str, method_signature: str = None) -> dict:
+async def get_method_by_name(class_name: str, method_name: str, method_signature: str | None = None) -> dict:
     """
     Fetch the source code of a method from a specific class.
 
@@ -234,6 +238,8 @@ async def search_classes_by_keyword(
     offset: int = 0,
     count: int = 20,
     report_progress=None,
+    regex: bool = False,
+    case_sensitive: bool = False,
 ) -> dict:
     """
     Search for classes containing a specific keyword with flexible filtering options.
@@ -273,6 +279,16 @@ async def search_classes_by_keyword(
     Returns:
         dict: Paginated list of classes containing the search term, with metadata about matches
     """
+    async def fetch_with_options(endpoint, params):
+        response = await _get_from_jadx_search(endpoint, params)
+        if (regex or case_sensitive) and (
+                not isinstance(response, dict) or (not response.get("error") and
+                response.get("search_options") != {"regex": regex, "case_sensitive": case_sensitive})):
+
+            return error_response("Plugin does not support the requested search options",
+                                  "unsupported_capability", endpoint=endpoint)
+        return response
+
     # Fire search request and progress poller concurrently
     progress_task = asyncio.create_task(_poll_progress(report_progress))
     try:
@@ -284,9 +300,11 @@ async def search_classes_by_keyword(
                 "search_term": search_term,
                 "package": package,
                 "search_in": search_in,
+                "regex": str(regex).lower(),
+                "case_sensitive": str(case_sensitive).lower(),
             },
             data_extractor=lambda parsed: parsed.get("classes", []),
-            fetch_function=_get_from_jadx_search,
+            fetch_function=fetch_with_options,
         )
     finally:
         progress_task.cancel()
