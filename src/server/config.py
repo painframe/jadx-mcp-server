@@ -19,6 +19,8 @@ from typing import Any
 
 import httpx
 
+from src.server.scheduling import gate_for
+
 # Default Configuration
 JADX_HOST = "127.0.0.1"
 JADX_PORT = 8650
@@ -32,7 +34,7 @@ MUTATING_ENDPOINTS = frozenset({"rename-class", "rename-method", "rename-field",
 
 
 def is_mutation(method: str, endpoint: str) -> bool:
-    return method != "GET" or endpoint.strip("/") in MUTATING_ENDPOINTS
+    return (method != "GET" and not (method == "POST" and endpoint.strip("/") == "batch-analysis")) or endpoint.strip("/") in MUTATING_ENDPOINTS
 JADX_CONNECT_TIMEOUT = 5.0
 JADX_FAILURE_COOLDOWN = 3.0
 _FAILURES_MAX = 128
@@ -177,9 +179,17 @@ async def _request_jadx(method: str, endpoint: str, params=None,
     url = f"{base}/{endpoint.lstrip('/')}"
     try:
         async with asyncio.timeout(timeout + JADX_CONNECT_TIMEOUT):
-            async with httpx.AsyncClient(trust_env=False) as client:
-                response = await client.request(method, url, params=params or {},
-                                                json=json_body, timeout=_http_timeout(timeout))
+            control = endpoint.strip("/") in {"health", "search-progress", "project-operation", "runtime-diagnostics"}
+            gate = gate_for(base + "#control" if control else base)
+            write = is_mutation(method, endpoint)
+            if gate is None or not await gate.acquire(write):
+                return error_response("Backend request queue is full", "busy", retryable=True, endpoint=endpoint)
+            try:
+                async with httpx.AsyncClient(trust_env=False) as client:
+                    response = await client.request(method, url, params=params or {},
+                                                    json=json_body, timeout=_http_timeout(timeout))
+            finally:
+                await gate.release(write)
         _failures.pop(base, None)
         result = _decode_response(response, endpoint)
         if isinstance(result, dict) and result.get("error") and is_mutation(method, endpoint):
