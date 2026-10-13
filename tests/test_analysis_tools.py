@@ -70,3 +70,16 @@ class AnalysisToolsTests(unittest.IsolatedAsyncioTestCase):
                     'method_name': 'run', 'new_name': 'execute', 'method_signature': 'run(int, String):void'})
             self.assertEqual(fetch.await_args.args[1]['method_signature'], 'run(int, String):void')
             self.assertEqual(result.data, payload)
+
+    async def test_overload_diagnostics_survive_real_http_decoder(self):
+        import httpx
+
+        from src.server import config
+        real_client = httpx.AsyncClient
+        payload = {'error': 'Ambiguous method', 'code': 'ambiguous_method', 'candidates': ['run(int):void']}
+        with patch.object(config.httpx, 'AsyncClient', side_effect=lambda **kw: real_client(
+                transport=httpx.MockTransport(lambda request: httpx.Response(409, json=payload)), **kw)):
+            async with Client(jadx_mcp_server.mcp) as client:
+                result = await client.call_tool('get_method_by_name', {'class_name': 'example.Class', 'method_name': 'run'})
+        self.assertEqual(result.data['candidates'], payload['candidates'])
+

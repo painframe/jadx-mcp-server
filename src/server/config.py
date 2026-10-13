@@ -130,6 +130,9 @@ def _decode_response(response: httpx.Response, endpoint: str):
             result["code"] = payload.get("code", "http_error") if isinstance(payload.get("code", "http_error"), str) else "http_error"
             result["source"] = "jadx"
             result["retryable"] = payload.get("retryable") is True
+            if isinstance(payload.get("candidates"), list):
+                result["candidates"] = [value[:512] for value in payload["candidates"][:100]
+                                        if isinstance(value, str)]
             return result
         return error_response(f"HTTP error {response.status_code} from JADX plugin", "http_error",
                               endpoint=endpoint, status=response.status_code,
