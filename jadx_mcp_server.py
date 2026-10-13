@@ -59,6 +59,7 @@ from src.server.tools import (
     class_tools,
     comment_tools,
     debug_tools,
+    project_tools,
     refactor_tools,
     resource_tools,
     search_tools,
@@ -407,6 +408,21 @@ async def search_native_methods(package: str = "", offset: int = 0, count: int =
 async def batch_analysis(operation: batch_tools.BatchOperation, items: list[dict], max_bytes: int = 65536) -> dict:
     """Read up to 50 class/method/xref targets with per-item outcomes and bounded content."""
     return await batch_tools.batch_analysis(operation, items, max_bytes)
+
+
+@mcp.tool()
+async def open_apk(path: str, replace: bool = False) -> dict:
+    """Open an absolute APK/DEX/JAR path on the backend host; poll the returned operation_id.
+
+    Existing projects require explicit replace=True. Unsaved changes are never discarded automatically.
+    """
+    return await project_tools.open_apk(path, replace)
+
+
+@mcp.tool()
+async def get_project_operation(operation_id: str) -> dict:
+    """Poll an APK load until ready or failed before issuing analysis requests."""
+    return await project_tools.get_project_operation(operation_id)
 
 
 def main():
