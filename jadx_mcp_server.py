@@ -55,6 +55,7 @@ logger.setLevel(logging.INFO)
 logger.propagate = False
 
 from src.server.tools import (
+    batch_tools,
     class_tools,
     comment_tools,
     debug_tools,
@@ -400,6 +401,12 @@ async def get_method_signature(class_name: str, method_name: str,
 async def search_native_methods(package: str = "", offset: int = 0, count: int = 20) -> dict:
     """Find native method declarations with package filtering and pagination."""
     return await search_tools.search_native_methods(package, offset, count)
+
+
+@mcp.tool()
+async def batch_analysis(operation: batch_tools.BatchOperation, items: list[dict], max_bytes: int = 65536) -> dict:
+    """Read up to 50 class/method/xref targets with per-item outcomes and bounded content."""
+    return await batch_tools.batch_analysis(operation, items, max_bytes)
 
 
 def main():

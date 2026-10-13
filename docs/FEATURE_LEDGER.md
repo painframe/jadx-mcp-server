@@ -65,3 +65,10 @@ Each feature is a separate stacked branch. Java counterparts are in painframe/ja
 - Security check found existing untrusted XML parser: added defusedxml>=0.7.1 consistently to project/script/requirements, a 4MiB input bound and entity rejection test.
 - Validation: 29 unittest cases including actual MCP Unicode content/cursor forwarding, unsupported older peers, malformed bounds and XML entity rejection; changed-file Ruff/Bandit clean.
 - Limits: backend owns cursor integrity/project generations and actual chunk bounds. Java runtime tests are separate; output byte ceiling applies to content, not protocol metadata.
+
+## 11 batch-analysis
+
+- Donor: xjoker/jadx-ai-mcp @ 30337f6f072aa360e9099c99e99fb330d44e8986.
+- New batch_analysis MCP tool accepts one of five analysis operations, 1..50 parameter objects, and bounded per-item content bytes. POST body is structured JSON; per-item success/error responses are preserved. Reject unknown parameters and invalid identifiers/pagination before dispatch.
+- Validation: 31 unittest cases, actual FastMCP to HTTP mock verifies POST JSON and mixed outcomes; oversized/malformed batch rejection; changed-file Ruff/Bandit clean.
+- Limits: total response may include fifty bounded contents plus metadata; Java owns execution and continuation.
