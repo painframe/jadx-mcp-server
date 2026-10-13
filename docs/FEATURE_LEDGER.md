@@ -163,3 +163,11 @@ Each feature is a separate stacked branch. Java counterparts are in painframe/ja
 - Adaptation: standalone bounded async baseline/candidate HTTP harness for repeated source/search/batch/cache/diagnostic requests. Same-fixture hash and revisions recorded, source hashes compared, failures/partial results retained, finite response/iteration/concurrency/deadline limits; runtime credentials excluded from output. Report output never overwrites an existing file.
 - Validation: 64 discovered unittest cases (two Docker smoke cases opt-in), statistics/error/source-hash tests and Ruff/Bandit clean. CLI help smoke passed.
 - Limits: no benchmark speedup claimed; actual paired runtime measurements await Java headless delivery. Heap metrics recorded only when advertised numeric keys are present; no peak RSS or cold-cache claim.
+
+### 25 recorded interim runtime evidence
+
+Root executed the harness against real JADX/HTTP handlers using a mocked GUI window,
+comparing Java fixture-base885e5b1 against feature14 revision63e21df. Source hashes
+matched; raw report and compiled-class provenance are preserved under docs/benchmarks.
+This is explicitly through-feature14 evidence on a tiny fixture, not a final-stack
+or production performance claim. See docs/benchmarks/README.md for limits.
