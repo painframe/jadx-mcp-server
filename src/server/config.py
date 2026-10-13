@@ -22,7 +22,7 @@ from urllib.parse import urlsplit, urlunsplit
 
 import httpx
 
-from src.server import instances
+from src.server import authorization, instances
 from src.server.scheduling import gate_for
 
 # Default Configuration
@@ -190,6 +190,9 @@ def health_ping() -> str | dict[str, Any]:
     selected = instances.current()
     base = selected["url"] if selected else JADX_HTTP_BASE
     identity = selected["id"] if selected else base
+    denied = authorization.forbidden(selected["id"] if selected else None)
+    if denied:
+        return denied
     headers, auth_error = backend_headers()
     if auth_error:
         return auth_error
@@ -219,6 +222,9 @@ async def _request_jadx(method: str, endpoint: str, params=None,
     selected = instances.current()
     base = selected["url"] if selected else JADX_HTTP_BASE
     identity = selected["id"] if selected else base
+    denied = authorization.forbidden(selected["id"] if selected else None, is_mutation(method, endpoint))
+    if denied:
+        return denied
     headers, auth_error = backend_headers()
     if auth_error:
         return auth_error

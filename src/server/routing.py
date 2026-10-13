@@ -3,7 +3,7 @@
 import functools
 import inspect
 
-from src.server import instances
+from src.server import authorization, instances
 from src.server.config import error_response
 
 
@@ -21,6 +21,9 @@ def instance_tool(mcp):
             identity, error = instances.resolve(selector)
             if error:
                 return error_response(error, 'invalid_instance')
+            denied = authorization.forbidden(identity)
+            if denied:
+                return denied
             token = instances.selected_instance.set(identity)
             try:
                 return await function(**bound.arguments)

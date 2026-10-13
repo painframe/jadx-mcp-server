@@ -41,7 +41,7 @@ for _var in _PROXY_VARS:
 from fastmcp import Context, FastMCP
 
 from src.banner import jadx_mcp_server_banner
-from src.server import config, instances
+from src.server import authorization, config, instances
 from src.server.routing import instance_tool
 
 # Initialize MCP Server
@@ -461,7 +461,7 @@ def main():
     parser.add_argument(
         "--host",
         help="Host address to bind for --http (default: 127.0.0.1, use 0.0.0.0 for remote access). "
-             "WARNING: non-localhost binds expose the server over plain HTTP with no authentication.",
+             "HTTP requires --users-file; use TLS termination for remote access.",
         default="127.0.0.1",
         type=str
     )
@@ -485,6 +485,7 @@ def main():
     parser.add_argument("--jadx-token-file", help="File containing backend bearer token; reloaded each request")
     parser.add_argument("--instances-file", help="Administrator JSON registry of backend IDs, URLs and credential references")
     parser.add_argument("--discover", action="store_true", help="Discover identified plugins on loopback ports 8650..8665")
+    parser.add_argument("--users-file", help="Local administrator bearer identity and per-instance policy JSON")
     args = parser.parse_args()
 
     # Configure
@@ -506,15 +507,16 @@ def main():
     if args.discover:
         asyncio.run(instances.discover_local())
 
-    # Security warning for non-localhost bind address
-    if args.host not in ("127.0.0.1", "localhost", "::1"):
-        logger.warning(
-            "\n⚠️  SECURITY WARNING: Binding to non-localhost address '%s'.\n"
-            "   The MCP server uses plain HTTP with NO authentication.\n"
-            "   Anyone on the network can connect and use all MCP tools.\n"
-            "   Only use this on trusted networks or behind a firewall.",
-            args.host
-        )
+    authorization.http_enabled = bool(args.http)
+    if args.http:
+        if not args.users_file:
+            parser.error("HTTP transport requires --users-file with bearer identities")
+        policy_error = authorization.load_policy(args.users_file)
+        if policy_error:
+            parser.error(policy_error)
+        mcp.auth = authorization.UserTokenVerifier(required_scopes=["jadx"])
+    else:
+        mcp.auth = None
 
     # Banner & Health Check — always logs to stderr to keep stdout clean for stdio transport
     try:
@@ -529,8 +531,9 @@ def main():
         )
 
     logger.info("Testing JADX AI MCP Plugin connectivity...")
-    result = config.health_ping()
-    logger.info("Health check %s", "failed" if isinstance(result, dict) and result.get("error") else "succeeded")
+    if not args.http:
+        result = config.health_ping()
+        logger.info("Health check %s", "failed" if isinstance(result, dict) and result.get("error") else "succeeded")
 
     # Run Server
     if args.http:

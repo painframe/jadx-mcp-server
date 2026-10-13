@@ -79,14 +79,18 @@ def current() -> dict | None:
 
 
 def public_instances() -> list[dict]:
+    from src.server.authorization import can_access
     return [{'id': name, 'aliases': item['aliases'], 'project_name': item.get('project_name'),
              'instance_id': item.get('instance_id'), 'capabilities': item.get('capabilities', [])}
-            for name, item in registry.items()]
+            for name, item in registry.items() if can_access(name)]
 
 
 async def refresh_instances() -> list[dict]:
     from src.server import config
+    from src.server.authorization import can_access
     for name in tuple(registry):
+        if not can_access(name):
+            continue
         token = selected_instance.set(name)
         try:
             result = await config.get_from_jadx('health', timeout=5)
