@@ -11,6 +11,7 @@ See the file 'LICENSE' for copying permission
 
 import argparse
 import asyncio
+import json
 import logging
 import os
 import sys
@@ -61,6 +62,7 @@ from src.server.tools import (
     class_tools,
     comment_tools,
     debug_tools,
+    diagnostic_tools,
     jvm_tools,
     project_tools,
     refactor_tools,
@@ -448,6 +450,18 @@ async def list_instances() -> dict:
 async def refresh_instances() -> dict:
     """Refresh identity/capabilities of configured plugin instances without registering URLs."""
     return {"instances": await instances.refresh_instances()}
+
+
+@instance_tool(mcp)
+async def get_runtime_diagnostics() -> dict:
+    """Read permitted instance JVM/cache/thread metrics, queue occupancy and degraded state."""
+    return await diagnostic_tools.get_runtime_diagnostics()
+
+
+@mcp.resource("jadx://status")
+async def runtime_status() -> str:
+    """Authenticated status view containing only instances permitted for the current user."""
+    return json.dumps(await diagnostic_tools.status_view())
 
 
 def main():
