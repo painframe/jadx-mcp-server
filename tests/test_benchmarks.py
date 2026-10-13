@@ -32,3 +32,14 @@ class BenchmarkTests(unittest.IsolatedAsyncioTestCase):
         summary = summarize([result])
         self.assertEqual(summary['successful'], 0)
         self.assertIsNone(summary['p95_ms'])
+
+    async def test_diagnostics_records_the_shared_java_nested_schema(self):
+        payload = {'memory': {'heap': {'used_bytes': 123, 'max_bytes': 456}},
+                   'threads': {'live': 7}}
+        async with httpx.AsyncClient(transport=httpx.MockTransport(
+                lambda request: httpx.Response(200, json=payload))) as client:
+            result = await sample(client, 'http://localhost', 'runtime-diagnostics', {}, 1)
+        # The shared Java endpoint nests memory/thread metrics; flat donor keys miss them.
+        self.assertEqual(result['metrics'], {'heap_used_bytes': 123,
+                                            'heap_max_bytes': 456, 'thread_count': 7})
+        self.assertTrue(result['ok'])

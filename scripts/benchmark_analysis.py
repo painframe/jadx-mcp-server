@@ -60,6 +60,14 @@ async def sample(client: httpx.AsyncClient, base: str, endpoint: str, params: di
                         result['metrics'] = {key: payload[key] for key in
                             ('heap_used_bytes', 'heap_max_bytes', 'thread_count')
                             if type(payload.get(key)) in (int, float)}
+                        for key, path in {'heap_used_bytes': ('memory', 'heap', 'used_bytes'),
+                                          'heap_max_bytes': ('memory', 'heap', 'max_bytes'),
+                                          'thread_count': ('threads', 'live')}.items():
+                            value = payload
+                            for part in path:
+                                value = value.get(part) if isinstance(value, dict) else None
+                            if type(value) in (int, float):
+                                result['metrics'][key] = value
                     if endpoint == 'batch-analysis':
                         items = payload.get('results')
                         result['ok'] = result['ok'] and isinstance(items, list) and len(items) == len(body['items']) and all(
