@@ -9,9 +9,11 @@ Author: Jafar Pathan (zinja-coder@github)
 License: See LICENSE file
 """
 
-import json
 import logging
-from typing import Dict, List, Any, Union, Callable
+from collections.abc import Callable
+from typing import Any
+
+from src.server.config import error_response
 
 # Set up logging configuration
 logger = logging.getLogger("jadx-mcp-server.pagination")
@@ -61,11 +63,11 @@ class PaginationUtils:
         endpoint: str,
         offset: int = 0,
         count: int = 0,
-        additional_params: dict = None,
-        data_extractor: Callable[[Any], List[Any]] = None,
-        item_transformer: Callable[[Any], Any] = None,
-        fetch_function: Callable = None
-    ) -> Union[Dict[str, Any], str]:
+        additional_params: dict | None = None,
+        data_extractor: Callable[[Any], list[Any]] | None = None,
+        item_transformer: Callable[[Any], Any] | None = None,
+        fetch_function: Callable | None = None
+    ) -> dict[str, Any] | str:
         """
         Generic pagination handler for JADX endpoints.
 
@@ -97,62 +99,39 @@ class PaginationUtils:
         Raises:
             Returns error dict on failures with descriptive error messages
         """
-        # Validate parameters
-        offset, count = PaginationUtils.validate_pagination_params(offset, count)
-
-        # Build query parameters
-        params = {"offset": offset}
+        if (type(offset) is not int or type(count) is not int or
+                not 0 <= offset <= PaginationUtils.MAX_OFFSET or
+                not 0 <= count <= PaginationUtils.MAX_PAGE_SIZE):
+            return error_response("offset and count must be integers within pagination bounds",
+                                  "invalid_request", status=400, endpoint=endpoint)
+        if fetch_function is None:
+            return error_response("fetch_function must be provided", endpoint=endpoint)
+        params = dict(additional_params or {})
+        params["offset"] = offset
         if count > 0:
             params["limit"] = count
-        if additional_params:
-            params.update(additional_params)
-
-        try:
-            # Use the passed fetch_function which is actually fetch_from_jadx
-            if fetch_function is None:
-                raise ValueError("fetch_function must be provided")
-
-            response = await fetch_function(endpoint, params)
-            if not isinstance(response, dict):
-                return {"error": f"Unexpected response type from {endpoint}: {type(response).__name__}"}
-            if response.get("error"):
-                return response
-
-            # Propagate upstream errors instead of silently building empty results
-            if not isinstance(response, dict):
-                return {"error": f"Unexpected response type from {endpoint}: {type(response).__name__}"}
-            if response.get("error"):
-                return response
-
-            # Parse JSON response
-            try:
-                # Extract data using custom extractor or default behavior
-                if data_extractor:
-                    items = data_extractor(response)
-                else:
-                    # Default extractors for common patterns
-                    items = (response.get("classes") or
-                            response.get("methods") or
-                            response.get("fields") or
-                            response.get("items", []))
-
-                # Transform items if transformer provided
-                if item_transformer and items:
-                    items = [item_transformer(item) for item in items]
-
-                # Build standardized response
-                return PaginationUtils._build_standardized_response(response, items)
-
-            except json.JSONDecodeError as e:
-                logger.error(f"Failed to parse JSON response from JADX: {e}")
-                return {"error": f"Invalid JSON response from JADX server: {str(e)}"}
-
-        except Exception as e:
-            logger.error(f"Error in paginated request to {endpoint}: {e}")
-            return {"error": f"Failed to fetch data from {endpoint}: {str(e)}"}
+        response = await fetch_function(endpoint, params)
+        if isinstance(response, list):
+            response = {"items": response}
+        if not isinstance(response, dict):
+            return error_response("Expected an object or list", endpoint=endpoint)
+        if response.get("error"):
+            return response
+        items = data_extractor(response) if data_extractor else next(
+            (response[key] for key in ("classes", "methods", "fields", "items") if key in response), [])
+        if not isinstance(items, list) or not isinstance(response.get("pagination", {}), dict):
+            return error_response("Invalid paginated response", endpoint=endpoint)
+        if item_transformer:
+            items = [item_transformer(item) for item in items]
+        result = PaginationUtils._build_standardized_response(response, items)
+        # Keep search completion metadata alongside standardized pagination.
+        for key in ("partial", "timed_out", "search_id", "warnings"):
+            if key in response:
+                result[key] = response[key]
+        return result
 
     @staticmethod
-    def _build_standardized_response(parsed_response: dict, items: List[Any]) -> dict:
+    def _build_standardized_response(parsed_response: dict, items: list[Any]) -> dict:
         """
         Build standardized pagination response.
 
