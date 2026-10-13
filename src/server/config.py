@@ -108,7 +108,7 @@ def backend_headers() -> tuple[dict, dict | None]:
                 token = source.read(8193).strip()
         except (OSError, UnicodeError):
             return {}, error_response("Cannot read backend token file", "configuration_error")
-    if len(token) > 8192 or any(c.isspace() or not c.isprintable() for c in token):
+    if (path and not token) or len(token) > 8192 or not token.isascii() or any(c.isspace() or not c.isprintable() for c in token):
         return {}, error_response("Invalid backend bearer token", "configuration_error")
     return ({"Authorization": f"Bearer {token}"} if token else {}), None
 

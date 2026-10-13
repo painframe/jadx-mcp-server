@@ -47,3 +47,13 @@ class BackendAuthTests(unittest.IsolatedAsyncioTestCase):
             self.assertIsNotNone(config.set_jadx_url('file:///etc/passwd'))
             self.assertIsNone(config.set_jadx_url('https://example.test/jadx/'))
             self.assertEqual(config.JADX_HTTP_BASE, 'https://example.test/jadx')
+
+    async def test_empty_file_and_non_ascii_token_never_dispatch(self):
+        with tempfile.TemporaryDirectory() as folder, patch.dict(os.environ, {}, clear=True):
+            path = Path(folder) / 'token'
+            with patch.object(config, 'JADX_TOKEN_FILE', str(path)), patch.object(config.httpx, 'AsyncClient') as client:
+                for value in ('', '   ', 'é'):
+                    path.write_text(value)
+                    result = await config.get_from_jadx('health')
+                    self.assertEqual(result['code'], 'configuration_error')
+                client.assert_not_called()
