@@ -42,7 +42,7 @@ for _var in _PROXY_VARS:
 from fastmcp import Context, FastMCP
 
 from src.banner import jadx_mcp_server_banner
-from src.server import authorization, config, instances
+from src.server import authorization, config, instances, prompts
 from src.server.routing import instance_tool
 
 # Initialize MCP Server
@@ -468,6 +468,11 @@ async def runtime_status() -> str:
 async def get_backend_capabilities() -> dict:
     """Discover GUI/headless mode and supported routes before selecting analysis operations."""
     return await project_tools.get_backend_capabilities()
+
+
+mcp.prompt()(prompts.analyze_project)
+mcp.prompt()(prompts.inspect_methods)
+mcp.prompt()(prompts.compare_instances)
 
 
 def main():

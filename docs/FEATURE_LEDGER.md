@@ -149,3 +149,10 @@ Each feature is a separate stacked branch. Java counterparts are in painframe/ja
 - Adaptation: digest-pinned Python3.13 and uv0.9.3 multi-stage build, frozen lock, installed non-editable package, UID/GID10001, exec entrypoint. Docker --init provides signal forwarding/reaping without adding an unpinned apt dependency. Strict build-context allowlist excludes credentials, git and fixtures.
 - Validation: actual Docker build succeeded (image sha256:54bfd4387df9854fb7846bb425f26eebbeb418b10ccffc0721f7fcf3cc575fe1); image UID10001/import and real stdio MCP initialize/list/call/unavailable-backend response passed. Container tests opt in via JADX_TEST_CONTAINER_IMAGE; Ruff/Bandit clean.
 - Limits: no image publication; no production deployment, TLS proxy or headless-Java integration claimed by Python image smoke. Image runtime Python3.13.16; workstation tests Python3.13.15.
+
+## 24 analysis-prompts
+
+- Donor: xjoker/jadx-ai-mcp @ 30337f6f072aa360e9099c99e99fb330d44e8986 (workflow prompt concepts).
+- Three MCP prompts: analyze_project, inspect_methods, compare_instances. They reference shipped tools, canonical selection, capability checks, readiness polling, metadata-first discovery, bounded batches/continuation and explicit incomplete-evidence reporting.
+- Validation: 62 discovered unittest cases (two Docker tests opt-in/skipped in default run), actual MCP prompt list/render matches current tools; changed-file Ruff/Bandit clean.
+- Limits: prompts guide clients but cannot guarantee model behavior or analysis correctness.
