@@ -313,3 +313,10 @@ async def search_classes_by_keyword(
         except asyncio.CancelledError:
             pass
     return result
+
+
+async def search_native_methods(package: str = "", offset: int = 0, count: int = 20) -> dict:
+    """Find native declarations with bounded, stable pagination."""
+    return await PaginationUtils.get_paginated_data(
+        "search-native-methods", offset, count, additional_params={"package": package},
+        data_extractor=lambda payload: payload.get("methods", []), fetch_function=get_from_jadx)

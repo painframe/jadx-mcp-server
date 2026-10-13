@@ -43,3 +43,10 @@ Each feature is a separate stacked branch. Java counterparts are in painframe/ja
 - New MCP tools get_class_info and get_method_signature call class-info/method-signature; descriptor remains nullable and optional. Responses preserve Java metadata, overload lists and Frida names.
 - Validation: 20 unittest cases including actual MCP metadata dispatch and nullable schemas; changed-file Ruff/Bandit/import pass.
 - Limits: requires paired Java routes; backend metadata correctness covered there, not by wrapper mocks.
+
+## 08 native-method-search
+
+- Donor: xjoker/jadx-ai-mcp @ 30337f6f072aa360e9099c99e99fb330d44e8986.
+- New search_native_methods MCP tool forwards package and validated offset/count to search-native-methods, normalizing method items through existing pagination.
+- Validation: 21 unittest cases including paginated dispatch and invalid pagination no-dispatch through actual MCP; changed-file Ruff/Bandit clean.
+- Limits: declaration discovery does not analyze native implementation binaries; requires paired Java route.
