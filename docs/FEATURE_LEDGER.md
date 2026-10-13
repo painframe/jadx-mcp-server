@@ -57,3 +57,11 @@ Each feature is a separate stacked branch. Java counterparts are in painframe/ja
 - Adaptation: advertise human signatures alongside existing JVM descriptors; forward exact strings and renamed identifiers through existing tools without a duplicate Python parser. Preserve backend ambiguity diagnostics and nullable arguments.
 - Validation: 22 unittest cases, including actual MCP rename with a human signature and unchanged overload error payload; changed-file Ruff/Bandit clean.
 - Limits: parsing and original/alias lookup require the paired Java feature. This bridge does not guess overloads.
+
+## 10 response-continuations
+
+- Donors: xjoker/jadx-ai-mcp @ 30337f6f072aa360e9099c99e99fb330d44e8986, mugiwarix/jadx-mcp-server @ 9ffc764e682792605b6b1657008e5724d9b6322e.
+- Adaptation: nullable max_bytes/cursor on source, smali and resource tools; validate finite bounds and require backend continuation acknowledgment. Default complete response shapes unchanged. Do not number partial source lines or truncate identifiers locally.
+- Security check found existing untrusted XML parser: added defusedxml>=0.7.1 consistently to project/script/requirements, a 4MiB input bound and entity rejection test.
+- Validation: 29 unittest cases including actual MCP Unicode content/cursor forwarding, unsupported older peers, malformed bounds and XML entity rejection; changed-file Ruff/Bandit clean.
+- Limits: backend owns cursor integrity/project generations and actual chunk bounds. Java runtime tests are separate; output byte ceiling applies to content, not protocol metadata.

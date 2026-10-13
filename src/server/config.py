@@ -213,3 +213,24 @@ async def get_search_progress() -> dict[str, Any]:
     if not isinstance(result, dict) or result.get("error"):
         return {"state": "unknown", **(result if isinstance(result, dict) else {})}
     return result
+
+
+async def get_content_from_jadx(endpoint: str, params: dict, max_bytes: int | None = None,
+                                cursor: str | None = None):
+    """Request explicit backend-owned UTF-8 continuation without truncating metadata."""
+    if max_bytes is None and cursor is None:
+        return await get_from_jadx(endpoint, params)
+    if max_bytes is not None and (type(max_bytes) is not int or not 1 <= max_bytes <= 1_048_576):
+        return error_response("max_bytes must be between 1 and 1048576", "invalid_request")
+    if cursor is not None and (not isinstance(cursor, str) or not cursor or len(cursor) > 4096):
+        return error_response("Invalid continuation cursor", "invalid_request")
+    if max_bytes is not None:
+        params = {**params, "max_bytes": max_bytes}
+    if cursor is not None:
+        params = {**params, "cursor": cursor}
+    result = await get_from_jadx(endpoint, params)
+    if isinstance(result, dict) and result.get("error"):
+        return result
+    if not isinstance(result, dict) or not isinstance(result.get("continuation"), dict):
+        return error_response("Plugin does not support content continuation", "unsupported_capability")
+    return result

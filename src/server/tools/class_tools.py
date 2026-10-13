@@ -10,7 +10,12 @@ License: See LICENSE file
 """
 
 from src.PaginationUtils import PaginationUtils
-from src.server.config import get_from_jadx, post_to_jadx
+from src.server.config import (
+    error_response,
+    get_content_from_jadx,
+    get_from_jadx,
+    post_to_jadx,
+)
 
 
 async def fetch_current_class() -> dict:
@@ -39,7 +44,7 @@ async def get_selected_text() -> dict:
     return await get_from_jadx("selected-text")
 
 
-async def get_class_source(class_name: str, with_line_numbers: bool = False) -> dict:
+async def get_class_source(class_name: str, with_line_numbers: bool = False, max_bytes: int | None = None, cursor: str | None = None) -> dict:
     """
     Fetch the Java source of a specific class.
 
@@ -55,7 +60,9 @@ async def get_class_source(class_name: str, with_line_numbers: bool = False) -> 
     MCP Tool: get_class_source
     Description: Retrieves decompiled Java source for any class in the APK
     """
-    result = await get_from_jadx("class-source", {"class_name": class_name})
+    if with_line_numbers and (max_bytes is not None or cursor is not None):
+        return error_response("Line numbering requires complete source; omit continuation options", "invalid_request")
+    result = await get_content_from_jadx("class-source", {"class_name": class_name}, max_bytes, cursor)
     if not with_line_numbers:
         return result
     return _number_source_lines(result)
@@ -139,7 +146,7 @@ async def get_fields_of_class(class_name: str) -> dict:
     return await get_from_jadx("fields-of-class", {"class_name": class_name})
 
 
-async def get_smali_of_class(class_name: str) -> dict:
+async def get_smali_of_class(class_name: str, max_bytes: int | None = None, cursor: str | None = None) -> dict:
     """
     Fetch the smali representation of a class.
 
@@ -152,7 +159,7 @@ async def get_smali_of_class(class_name: str) -> dict:
     MCP Tool: get_smali_of_class
     Description: Retrieves low-level smali bytecode for advanced analysis
     """
-    return await get_from_jadx("smali-of-class", {"class_name": class_name})
+    return await get_content_from_jadx("smali-of-class", {"class_name": class_name}, max_bytes, cursor)
 
 
 async def get_main_application_classes_names() -> dict:
