@@ -43,3 +43,32 @@ class SchedulingTests(unittest.IsolatedAsyncioTestCase):
         self.assertTrue(await second.acquire(False))
         await first.release(True)
         await second.release(False)
+
+    async def test_progress_bypasses_writer_waiting_behind_search(self):
+        import httpx
+
+        from src.server import config
+        active = asyncio.Event()
+        finish = asyncio.Event()
+        async def handler(request):
+            if request.url.path == '/search':
+                active.set()
+                await finish.wait()
+            return httpx.Response(200, json={'state': 'running'})
+        real_client = httpx.AsyncClient
+        with patch.object(config.httpx, 'AsyncClient', side_effect=lambda **kw: real_client(
+                transport=httpx.MockTransport(handler), **kw)):
+            search = asyncio.create_task(config.get_from_jadx('search'))
+            await active.wait()
+            writer = asyncio.create_task(config.get_from_jadx('rename-class'))
+            await asyncio.sleep(0)
+            progress = await asyncio.wait_for(config.get_search_progress(), .5)
+            self.assertEqual(progress['state'], 'running')
+            self.assertFalse(writer.done())
+            search.cancel()
+            with self.assertRaises(asyncio.CancelledError):
+                await search
+            await asyncio.wait_for(writer, .5)
+            gate = scheduling.gate_for(config.JADX_HTTP_BASE)
+            self.assertFalse(gate.writer)
+            self.assertEqual(gate.readers, 0)

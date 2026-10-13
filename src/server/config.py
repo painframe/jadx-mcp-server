@@ -179,7 +179,8 @@ async def _request_jadx(method: str, endpoint: str, params=None,
     url = f"{base}/{endpoint.lstrip('/')}"
     try:
         async with asyncio.timeout(timeout + JADX_CONNECT_TIMEOUT):
-            gate = gate_for(base)
+            control = endpoint.strip("/") in {"health", "search-progress", "project-operation", "runtime-diagnostics"}
+            gate = gate_for(base + "#control" if control else base)
             write = is_mutation(method, endpoint)
             if gate is None or not await gate.acquire(write):
                 return error_response("Backend request queue is full", "busy", retryable=True, endpoint=endpoint)
