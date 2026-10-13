@@ -6,7 +6,7 @@ import os
 from pathlib import Path
 
 from fastmcp.server.auth import AccessToken, TokenVerifier
-from fastmcp.server.dependencies import get_access_token
+from fastmcp.server.dependencies import get_access_token, get_http_request
 
 from src.server import instances
 
@@ -61,7 +61,11 @@ class UserTokenVerifier(TokenVerifier):
 
 def can_access(identity: str | None, write: bool = False) -> bool:
     if not http_enabled:
-        return True
+        try:
+            get_http_request()
+        except RuntimeError:
+            # FastMCP signals trusted in-process/stdio execution with no HTTP request.
+            return True
     access = get_access_token()
     if access is None or access.client_id not in users:
         return False

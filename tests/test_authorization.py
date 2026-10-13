@@ -65,3 +65,18 @@ class AuthorizationTests(unittest.IsolatedAsyncioTestCase):
         with patch.object(authorization, 'http_enabled', True), patch.object(authorization, 'get_access_token', return_value=None):
             result = await config.get_from_jadx('class-info')
             self.assertEqual(result['code'], 'forbidden')
+
+    async def test_imported_http_app_cannot_bypass_cli_policy(self):
+        saved_auth = jadx_mcp_server.mcp.auth
+        jadx_mcp_server.mcp.auth = None
+        app = jadx_mcp_server.mcp.http_app(stateless_http=True, json_response=True)
+        try:
+            with patch.object(authorization, 'http_enabled', False), patch.object(authorization, 'users', {}):
+                async with app.router.lifespan_context(app), httpx.AsyncClient(
+                        transport=httpx.ASGITransport(app=app), base_url='http://test') as client:
+                    response = await client.post('/mcp', headers={'accept': 'application/json, text/event-stream'},
+                        json={'jsonrpc': '2.0', 'id': 1, 'method': 'tools/call',
+                              'params': {'name': 'get_class_info', 'arguments': {'class_name': 'A'}}})
+                    self.assertEqual(response.json()['result']['structuredContent']['code'], 'forbidden')
+        finally:
+            jadx_mcp_server.mcp.auth = saved_auth
