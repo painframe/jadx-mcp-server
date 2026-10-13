@@ -9,8 +9,8 @@ Author: Jafar Pathan (zinja-coder@github)
 License: See LICENSE file
 """
 
-from src.server.config import get_from_jadx, post_to_jadx
 from src.PaginationUtils import PaginationUtils
+from src.server.config import get_from_jadx, post_to_jadx
 
 
 async def fetch_current_class() -> dict:
@@ -243,3 +243,17 @@ async def clear_cache() -> dict:
     Description: Resets the source code cache (use when switching APKs)
     """
     return await post_to_jadx("cache-clear")
+
+
+async def get_class_info(class_name: str) -> dict:
+    """Read structured class, field and method metadata without fetching source."""
+    return await get_from_jadx("class-info", {"class_name": class_name})
+
+
+async def get_method_signature(class_name: str, method_name: str,
+                               method_signature: str | None = None) -> dict:
+    """Resolve overload descriptors, parameter/return types and Frida type names."""
+    params = {"class_name": class_name, "method_name": method_name}
+    if method_signature is not None:
+        params["method_signature"] = method_signature
+    return await get_from_jadx("method-signature", params)

@@ -36,3 +36,10 @@ Each feature is a separate stacked branch. Java counterparts are in painframe/ja
 - Adaptation: additive regex and case_sensitive flags default false; preserve the expression verbatim and use lowercase boolean query values. Actual FastMCP calls verify forwarding and defaults. Module-level registration imports replace duplicate unused function imports; rejected progress notifications are debug logged.
 - Validation: 19 unittest cases; Ruff/Bandit clean on all changed Python files; import exercised by MCP tests.
 - Limits: execution deadlines and pattern evaluation live in the paired Java PR; older plugins ignore flags and cannot provide these search semantics.
+
+## 07 analysis-metadata
+
+- Donor: xjoker/jadx-ai-mcp @ 30337f6f072aa360e9099c99e99fb330d44e8986.
+- New MCP tools get_class_info and get_method_signature call class-info/method-signature; descriptor remains nullable and optional. Responses preserve Java metadata, overload lists and Frida names.
+- Validation: 20 unittest cases including actual MCP metadata dispatch and nullable schemas; changed-file Ruff/Bandit/import pass.
+- Limits: requires paired Java routes; backend metadata correctness covered there, not by wrapper mocks.
